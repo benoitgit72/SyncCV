@@ -1,0 +1,37 @@
+# Python virtual environment
+Benoit-Gaulin-CV_venv/
+venv/
+env/
+*.pyc
+__pycache__/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/*.log
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Node modules (if added later)
+node_modules/
+
+# Build files
+dist/
+build/
