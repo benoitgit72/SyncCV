@@ -204,53 +204,107 @@ backToTopBtn.addEventListener('click', () => {
 // ===========================
 const contactForm = document.getElementById('contactForm');
 
-contactForm.addEventListener('submit', (e) => {
+contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Get form data
-    const formData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        subject: document.getElementById('subject').value,
-        message: document.getElementById('message').value
-    };
+    // Disable submit button to prevent double submission
+    const submitButton = contactForm.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Envoi en cours...';
 
-    // Here you would typically send the form data to a server
-    // For now, we'll just show a success message
+    try {
+        // Create FormData and convert to URL-encoded format (required by Formspree)
+        const formData = new FormData(contactForm);
+        const urlParams = new URLSearchParams(formData);
 
-    // Create success message
-    const successMessage = document.createElement('div');
-    successMessage.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 2rem 3rem;
-        border-radius: 15px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        z-index: 10000;
-        text-align: center;
-        animation: fadeInUp 0.5s ease-out;
-    `;
-    successMessage.innerHTML = `
-        <h3 style="margin-bottom: 0.5rem;">Message envoyé avec succès!</h3>
-        <p style="margin: 0;">Je vous répondrai dans les plus brefs délais.</p>
-    `;
+        // Send form data to Formspree
+        const response = await fetch(contactForm.action, {
+            method: 'POST',
+            body: urlParams,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
 
-    document.body.appendChild(successMessage);
+        if (response.ok) {
+            // Create success message
+            const successMessage = document.createElement('div');
+            successMessage.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 2rem 3rem;
+                border-radius: 15px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+                z-index: 10000;
+                text-align: center;
+                animation: fadeInUp 0.5s ease-out;
+            `;
+            successMessage.innerHTML = `
+                <h3 style="margin-bottom: 0.5rem;">Message envoyé avec succès!</h3>
+                <p style="margin: 0;">Je vous répondrai dans les plus brefs délais.</p>
+            `;
 
-    // Reset form
-    contactForm.reset();
+            document.body.appendChild(successMessage);
 
-    // Remove message after 3 seconds
-    setTimeout(() => {
-        successMessage.style.animation = 'fadeOut 0.5s ease-out forwards';
+            // Reset form
+            contactForm.reset();
+
+            // Remove message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.animation = 'fadeOut 0.5s ease-out forwards';
+                setTimeout(() => {
+                    document.body.removeChild(successMessage);
+                }, 500);
+            }, 3000);
+        } else {
+            // Show error message
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Erreur lors de l\'envoi du message');
+        }
+    } catch (error) {
+        // Create error message
+        const errorMessage = document.createElement('div');
+        errorMessage.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #e74c3c;
+            color: white;
+            padding: 2rem 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            text-align: center;
+            animation: fadeInUp 0.5s ease-out;
+        `;
+        errorMessage.innerHTML = `
+            <h3 style="margin-bottom: 0.5rem;">Erreur d'envoi</h3>
+            <p style="margin: 0;">Une erreur s'est produite. Veuillez réessayer.</p>
+        `;
+
+        document.body.appendChild(errorMessage);
+
+        // Remove message after 3 seconds
         setTimeout(() => {
-            document.body.removeChild(successMessage);
-        }, 500);
-    }, 3000);
+            errorMessage.style.animation = 'fadeOut 0.5s ease-out forwards';
+            setTimeout(() => {
+                document.body.removeChild(errorMessage);
+            }, 500);
+        }, 3000);
+
+        console.error('Form submission error:', error);
+    } finally {
+        // Re-enable submit button
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
+    }
 });
 
 // Add fadeOut animation
