@@ -26,7 +26,8 @@ export default async function handler(req, res) {
                 'anthropic-version': '2023-06-01'
             },
             body: JSON.stringify({
-                model: 'claude-3-5-sonnet-20240620',
+                // model: 'claude-3-5-sonnet-20240620',
+                model: 'claude-haiku-4-5-20251001',
                 max_tokens: 1024,
                 system: `Tu es un assistant IA qui aide les visiteurs à en savoir plus sur Benoit Gaulin en répondant à leurs questions sur son CV. Voici les informations du CV:\n\n${cvContext}\n\nRéponds de manière professionnelle, concise et en français. Si on te demande des informations qui ne sont pas dans le CV, dis-le poliment.`,
                 messages: messages
