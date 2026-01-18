@@ -474,3 +474,28 @@ window.addEventListener('online', () => {
 window.addEventListener('offline', () => {
     console.log('⚠️ No internet connection');
 });
+
+// ===========================
+// Experience Toggle (Expand/Collapse Details)
+// ===========================
+const experienceToggles = document.querySelectorAll('.experience-toggle');
+
+experienceToggles.forEach(toggle => {
+    toggle.addEventListener('click', () => {
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        const achievementList = toggle.nextElementSibling;
+        const toggleText = toggle.querySelector('.toggle-text');
+
+        if (isExpanded) {
+            // Collapse
+            toggle.setAttribute('aria-expanded', 'false');
+            achievementList.setAttribute('hidden', '');
+            toggleText.textContent = 'Afficher les détails';
+        } else {
+            // Expand
+            toggle.setAttribute('aria-expanded', 'true');
+            achievementList.removeAttribute('hidden');
+            toggleText.textContent = 'Masquer les détails';
+        }
+    });
+});
