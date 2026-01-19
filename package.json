@@ -1,0 +1,19 @@
+{
+  "name": "benoit-gaulin-cv",
+  "version": "1.0.0",
+  "description": "CV interactif de Benoit Gaulin avec chatbot IA",
+  "type": "module",
+  "dependencies": {
+    "@upstash/ratelimit": "^2.0.4",
+    "@upstash/redis": "^1.34.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": ["cv", "portfolio", "chatbot", "claude"],
+  "author": "Benoit Gaulin",
+  "license": "ISC"
+}
