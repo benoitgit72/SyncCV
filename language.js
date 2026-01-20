@@ -95,10 +95,27 @@ class LanguageManager {
         this.updateTextContent('.contact-intro', t.contact_subtitle);
         this.updateContact(lang, t);
 
-        // Update chatbot placeholder
+        // Update chatbot elements
         const chatInput = document.getElementById('chatInput');
         if (chatInput) {
             chatInput.placeholder = t.chatbot_placeholder;
+        }
+
+        // Update chatbot header title and subtitle
+        const chatbotHeader = document.querySelector('.chatbot-header h3');
+        if (chatbotHeader) {
+            chatbotHeader.textContent = t.chatbot_title;
+        }
+
+        const chatbotSubtitle = document.querySelector('.chatbot-header p');
+        if (chatbotSubtitle) {
+            chatbotSubtitle.textContent = t.chatbot_subtitle;
+        }
+
+        // Update chatbot welcome message (first bot message)
+        const welcomeMessage = document.querySelector('.bot-message .message-content');
+        if (welcomeMessage) {
+            welcomeMessage.textContent = t.chatbot_welcome;
         }
 
         // Émettre un événement personnalisé pour informer le chatbot du changement de langue

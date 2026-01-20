@@ -266,6 +266,9 @@ const translations = {
         footer_and: "et",
 
         // Chatbot
+        chatbot_title: "💬 Demander à l'IA",
+        chatbot_subtitle: "Posez-moi des questions sur le CV de Benoit",
+        chatbot_welcome: "Bonjour! Je suis un assistant IA qui peut répondre à vos questions sur le parcours professionnel de Benoit Gaulin. N'hésitez pas à me demander des informations sur son expérience, ses compétences ou sa formation.",
         chatbot_placeholder: "Posez une question sur mon CV...",
         chatbot_send: "Envoyer",
     },
@@ -536,6 +539,9 @@ const translations = {
         footer_and: "and",
 
         // Chatbot
+        chatbot_title: "💬 Ask the AI",
+        chatbot_subtitle: "Ask me questions about Benoit's resume",
+        chatbot_welcome: "Hello! I am an AI assistant who can answer your questions about Benoit Gaulin's professional background. Feel free to ask me about his experience, skills, or education.",
         chatbot_placeholder: "Ask a question about my resume...",
         chatbot_send: "Send",
     }

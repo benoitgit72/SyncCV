@@ -102,7 +102,7 @@ export default async function handler(req, res) {
             });
         }
 
-        const { messages, cvContext } = req.body;
+        const { messages, cvContext, language = 'fr' } = req.body;
 
         // Vérifier que la clé API est configurée
         if (!process.env.ANTHROPIC_API_KEY) {
@@ -110,6 +110,14 @@ export default async function handler(req, res) {
                 error: 'API key not configured. Please add ANTHROPIC_API_KEY to your Vercel environment variables.'
             });
         }
+
+        // Préparer le prompt système en fonction de la langue
+        const systemPrompts = {
+            fr: `Tu es un assistant IA qui aide les visiteurs à en savoir plus sur Benoit Gaulin en répondant à leurs questions sur son CV. Voici les informations du CV:\n\n${cvContext}\n\nRéponds de manière professionnelle, concise et en français. IMPORTANT: Limite tes réponses à un maximum de 75 mots. Si on te demande des informations qui ne sont pas dans le CV, dis-le poliment. Si quelqu'un souhaite contacter Benoit, réfère-le à la section "Me contacter" du CV interactif.`,
+            en: `You are an AI assistant helping visitors learn more about Benoit Gaulin by answering questions about his resume. Here is the resume information:\n\n${cvContext}\n\nRespond in a professional, concise manner in English. IMPORTANT: Limit your responses to a maximum of 75 words. If asked for information not in the resume, politely say so. If someone wants to contact Benoit, refer them to the "Contact Me" section of the interactive resume.`
+        };
+
+        const systemPrompt = systemPrompts[language] || systemPrompts.fr;
 
         // Appeler l'API Claude
         const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -123,7 +131,7 @@ export default async function handler(req, res) {
                 // model: 'claude-3-5-sonnet-20240620',
                 model: 'claude-haiku-4-5-20251001',
                 max_tokens: 1024,
-                system: `Tu es un assistant IA qui aide les visiteurs à en savoir plus sur Benoit Gaulin en répondant à leurs questions sur son CV. Voici les informations du CV:\n\n${cvContext}\n\nRéponds de manière professionnelle, concise et en français. IMPORTANT: Limite tes réponses à un maximum de 75 mots. Si on te demande des informations qui ne sont pas dans le CV, dis-le poliment. Si quelqu'un souhaite contacter Benoit, réfère-le à la section "Me contacter" du CV interactif.`,
+                system: systemPrompt,
                 messages: messages
             })
         });

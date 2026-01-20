@@ -105,6 +105,9 @@ class CVChatbot {
         // Get CV context
         const cvContext = this.getCVContext();
 
+        // Get current language from localStorage or default to 'fr'
+        const currentLang = localStorage.getItem('language') || 'fr';
+
         // Build messages array
         const messages = [
             ...this.conversationHistory,
@@ -122,7 +125,8 @@ class CVChatbot {
             },
             body: JSON.stringify({
                 messages: messages,
-                cvContext: cvContext
+                cvContext: cvContext,
+                language: currentLang
             })
         });
 
