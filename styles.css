@@ -382,7 +382,7 @@ body {
 }
 
 .about-text p {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     color: var(--gray-text);
     margin-bottom: 2rem;
     line-height: 1.8;
