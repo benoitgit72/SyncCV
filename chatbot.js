@@ -65,15 +65,51 @@ class CVChatbot {
 
     async loadAdditionalInfo() {
         try {
-            const response = await fetch('/api/additional-info');
-            if (response.ok) {
-                const data = await response.json();
-                this.additionalInfo = data.content || '';
-            }
+            // Utiliser les données du CV chargées depuis Supabase
+            // Attendre que cvData soit chargé
+            const checkCvData = setInterval(() => {
+                if (window.cvData) {
+                    clearInterval(checkCvData);
+                    // Construire un contexte enrichi à partir des données du CV
+                    this.additionalInfo = this.buildContextFromCvData(window.cvData);
+                }
+            }, 100);
         } catch (error) {
             console.error('Error loading additional info:', error);
             this.additionalInfo = '';
         }
+    }
+
+    buildContextFromCvData(cvData) {
+        if (!cvData) return '';
+
+        let context = '';
+
+        // Ajouter les informations personnelles
+        if (cvData.cvInfo) {
+            context += `Nom: ${cvData.cvInfo.nom}\n`;
+            context += `Titre: ${cvData.cvInfo.titre}\n`;
+            context += `Bio: ${cvData.cvInfo.bio}\n\n`;
+        }
+
+        // Ajouter un résumé des expériences
+        if (cvData.experiences && cvData.experiences.length > 0) {
+            context += `Expériences (${cvData.experiences.length}):\n`;
+            cvData.experiences.slice(0, 5).forEach(exp => {
+                context += `- ${exp.titre} chez ${exp.entreprise}\n`;
+            });
+            context += '\n';
+        }
+
+        // Ajouter les compétences par catégorie
+        if (cvData.competencesParCategorie) {
+            context += 'Compétences:\n';
+            Object.entries(cvData.competencesParCategorie).forEach(([categorie, competences]) => {
+                context += `${categorie}: ${competences.map(c => c.competence).join(', ')}\n`;
+            });
+        }
+
+        return context;
     }
 
     saveApiKey() {
