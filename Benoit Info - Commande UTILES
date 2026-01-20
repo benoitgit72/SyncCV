@@ -5,9 +5,12 @@
 ## GESTION VENV PYTHON
 ## ################################################################
 
+## CREATE NEW VENV ENVIRONMENT
+python3 -m venv Ron-More-CV_venv
+
 ## START/STOP ENVIRONNEMENT
 ### Start
-    source /Users/macbook-air.dev/Benoit-Gaulin-CV/Benoit-Gaulin-CV_venv/bin/activate
+    source /Users/macbook-air.dev/Ron-More-CV/Ron-More-CV_venv/bin/activate
 ### Stop
     deactivate
 
