@@ -1,4 +1,4 @@
-// Traductions pour le CV de Benoit Gaulin
+// Traductions pour le CV
 const translations = {
     fr: {
         // Navigation
@@ -11,7 +11,7 @@ const translations = {
 
         // Hero Section
         hero_greeting: "Bonjour, je suis",
-        hero_name: "Benoit Gaulin",
+        hero_name: "hero_name=Benoit Gaulin",
         hero_subtitle: "Chef de Projet Technique | Expert SAS & Leader TI",
         hero_btn_contact: "Me contacter",
         hero_btn_about: "En savoir plus",
@@ -251,7 +251,7 @@ const translations = {
         contact_form_subject: "Sujet *",
         contact_form_subject_placeholder: "Opportunité de collaboration",
         contact_form_message: "Message *",
-        contact_form_message_placeholder: "Bonjour Benoit, je souhaiterais discuter avec vous...",
+        contact_form_message_placeholder: "Bonjour, je souhaiterais discuter avec vous...",
         contact_form_btn: "Envoyer le message",
         contact_form_note: "* Champs obligatoires",
         contact_form_sending: "Envoi en cours...",
@@ -261,14 +261,14 @@ const translations = {
         contact_form_error_msg: "Une erreur s'est produite. Veuillez réessayer.",
 
         // Footer
-        footer_text: "© 2024 Benoit Gaulin. Tous droits réservés.",
+        footer_text: "© 2026 [Prénom-Nom]. Tous droits réservés.",
         footer_made_with: "Fait avec",
         footer_and: "et",
 
         // Chatbot
         chatbot_title: "💬 Demander à l'IA",
-        chatbot_subtitle: "Posez-moi des questions sur le CV de Benoit",
-        chatbot_welcome: "Bonjour! Je suis un assistant IA qui peut répondre à vos questions sur le parcours professionnel de Benoit Gaulin. N'hésitez pas à me demander des informations sur son expérience, ses compétences ou sa formation.",
+        chatbot_subtitle: "Posez-moi des questions sur le CV",
+        chatbot_welcome: "Bonjour! Je suis un assistant IA qui peut répondre à vos questions sur le parcours professionnel. N'hésitez pas à me demander des informations sur son expérience, ses compétences ou sa formation.",
         chatbot_placeholder: "Posez une question sur mon CV...",
         chatbot_send: "Envoyer",
     },
@@ -284,7 +284,7 @@ const translations = {
 
         // Hero Section
         hero_greeting: "Hello, I'm",
-        hero_name: "Benoit Gaulin",
+        hero_name: "hero_name=Benoit Gaulin",
         hero_subtitle: "Technical Project Manager | SAS Expert & IT Leader",
         hero_btn_contact: "Contact Me",
         hero_btn_about: "Learn More",
@@ -524,7 +524,7 @@ const translations = {
         contact_form_subject: "Subject *",
         contact_form_subject_placeholder: "Collaboration Opportunity",
         contact_form_message: "Message *",
-        contact_form_message_placeholder: "Hello Benoit, I would like to discuss with you...",
+        contact_form_message_placeholder: "Hello, I would like to discuss with you...",
         contact_form_btn: "Send Message",
         contact_form_note: "* Required fields",
         contact_form_sending: "Sending...",
@@ -534,14 +534,14 @@ const translations = {
         contact_form_error_msg: "An error occurred. Please try again.",
 
         // Footer
-        footer_text: "© 2024 Benoit Gaulin. All rights reserved.",
+        footer_text: "© 2026 [First-Name Last-name]. All rights reserved.",
         footer_made_with: "Made with",
         footer_and: "and",
 
         // Chatbot
         chatbot_title: "💬 Ask the AI",
-        chatbot_subtitle: "Ask me questions about Benoit's resume",
-        chatbot_welcome: "Hello! I am an AI assistant who can answer your questions about Benoit Gaulin's professional background. Feel free to ask me about his experience, skills, or education.",
+        chatbot_subtitle: "Ask me questions the resume",
+        chatbot_welcome: "Hello! I am an AI assistant who can answer your questions about professional background. Feel free to ask me about his experience, skills, or education.",
         chatbot_placeholder: "Ask a question about my resume...",
         chatbot_send: "Send",
     }
