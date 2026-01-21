@@ -53,13 +53,15 @@ class LanguageManager {
 
         // Hero Section
         this.updateTextContent('.hero .greeting', t.hero_greeting);
-        this.updateTextContent('.hero-subtitle', t.hero_subtitle);
+        // Note: .hero-subtitle content now comes from Supabase (cv_info.titre / titre_en)
+        // this.updateTextContent('.hero-subtitle', t.hero_subtitle);
         this.updateTextContent('.hero-buttons .btn-primary', t.hero_btn_contact);
         this.updateTextContent('.hero-buttons .btn-secondary', t.hero_btn_about);
 
         // About Section
         this.updateTextContent('.about-section .section-title', t.about_title);
-        this.updateTextContent('.about-text', t.about_text);
+        // Note: .about-text content now comes from Supabase (cv_info.bio / bio_en)
+        // this.updateTextContent('.about-text', t.about_text);
 
         // Stats
         const stats = document.querySelectorAll('.stat-label');
@@ -72,23 +74,19 @@ class LanguageManager {
         // Experience Section
         this.updateTextContent('.experience-section .section-title', t.exp_title);
 
-        // Update experience toggle buttons
-        const toggleButtons = document.querySelectorAll('.experience-toggle .toggle-text');
-        toggleButtons.forEach(btn => {
-            const isExpanded = btn.closest('.experience-toggle').getAttribute('aria-expanded') === 'true';
-            btn.textContent = isExpanded ? t.exp_hide_details : t.exp_show_details;
-        });
-
-        // Update specific job entries
-        this.updateExperience(lang, t);
+        // Note: Experience content now comes from Supabase and is handled by cv-loader.js
+        // Toggle buttons are also managed by cv-loader.js based on language
+        // this.updateExperience(lang, t);
 
         // Education Section
         this.updateTextContent('.education-section .section-title', t.edu_title);
-        this.updateEducation(lang, t);
+        // Note: Education content now comes from Supabase and is handled by cv-loader.js
+        // this.updateEducation(lang, t);
 
         // Skills Section
         this.updateTextContent('.skills-section .section-title', t.skills_title);
-        this.updateSkills(lang, t);
+        // Note: Skills content now comes from Supabase and is handled by cv-loader.js
+        // this.updateSkills(lang, t);
 
         // Contact Section
         this.updateTextContent('.contact-section .section-title', t.contact_title);
