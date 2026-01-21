@@ -40,6 +40,7 @@ DROP POLICY IF EXISTS "Users can view their own formations" ON formations;
 DROP POLICY IF EXISTS "Users can update their own formations" ON formations;
 DROP POLICY IF EXISTS "Users can insert their own formations" ON formations;
 DROP POLICY IF EXISTS "Users can delete their own formations" ON formations;
+DROP POLICY IF EXISTS "Users can delete leur own formations" ON formations; -- Ancienne version avec typo
 
 -- Supprimer les politiques de competences
 DROP POLICY IF EXISTS "Public can read all competences" ON competences;
@@ -196,7 +197,7 @@ FOR INSERT
 WITH CHECK (auth.uid() = user_id);
 
 -- Les utilisateurs peuvent supprimer leurs propres formations
-CREATE POLICY "Users can delete leur own formations"
+CREATE POLICY "Users can delete their own formations"
 ON formations
 FOR DELETE
 USING (auth.uid() = user_id);
