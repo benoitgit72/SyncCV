@@ -69,12 +69,24 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // ===========================
 // Animated Counter for Stats
 // ===========================
-const statNumbers = document.querySelectorAll('.stat-number');
 let hasAnimated = false;
 
 const animateCounters = () => {
+    // Récupérer les éléments à chaque fois pour s'assurer qu'ils sont présents après le chargement dynamique
+    const statNumbers = document.querySelectorAll('.stat-number');
+
+    if (statNumbers.length === 0) {
+        console.warn('⚠️ No stat numbers found for animation');
+        return;
+    }
+
     statNumbers.forEach(stat => {
         const target = parseInt(stat.getAttribute('data-target'));
+        if (!target || isNaN(target)) {
+            console.warn('⚠️ Invalid data-target for stat:', stat);
+            return;
+        }
+
         const duration = 2000; // 2 seconds
         const increment = target / (duration / 16); // 60fps
         let current = 0;
@@ -91,27 +103,45 @@ const animateCounters = () => {
 
         updateCounter();
     });
+
+    console.log('✅ Counter animation started');
 };
 
 // Trigger counter animation when about section is in view
+// Utiliser un seuil plus bas pour mobile (0.2 au lieu de 0.5)
 const observerOptions = {
-    threshold: 0.5,
+    threshold: 0.2,
     rootMargin: '0px'
 };
 
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting && !hasAnimated) {
-            animateCounters();
-            hasAnimated = true;
+            // Petit délai pour s'assurer que le contenu dynamique est chargé
+            setTimeout(() => {
+                animateCounters();
+                hasAnimated = true;
+            }, 100);
         }
     });
 }, observerOptions);
 
+// Observer la section About
 const aboutSection = document.querySelector('.about-section');
 if (aboutSection) {
     observer.observe(aboutSection);
+} else {
+    console.warn('⚠️ About section not found for counter animation');
 }
+
+// Fallback: animer après un délai si l'observer ne se déclenche pas
+setTimeout(() => {
+    if (!hasAnimated && document.querySelector('.stat-number')) {
+        console.log('📊 Fallback: animating counters after delay');
+        animateCounters();
+        hasAnimated = true;
+    }
+}, 3000);
 
 // ===========================
 // Animate Skills Progress Bars
