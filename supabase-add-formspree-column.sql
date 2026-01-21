@@ -10,7 +10,7 @@ COMMENT ON COLUMN cv_info.formspree_id IS 'Formspree Form ID for contact form (e
 
 -- Mettre à jour le Form ID pour Ron More
 UPDATE cv_info
-SET formspree_id = 'VOTRE_FORM_ID_ICI'
+SET formspree_id = 'mpqqkbka'
 WHERE user_id = 'd5b317b1-34ba-4289-8d40-11fd1b584315';
 
 -- Vérification
