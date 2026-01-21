@@ -5,6 +5,9 @@
 // Slug du CV à charger (par défaut : ron-more)
 const CV_SLUG = 'ron-more';
 
+// Langue actuelle (par défaut : français)
+let currentLanguage = localStorage.getItem('language') || 'fr';
+
 // Cache des données pour éviter les rechargements
 // Rendre accessible globalement pour le chatbot
 let cvData = null;
@@ -105,14 +108,15 @@ async function loadCVData(slug = CV_SLUG) {
 }
 
 /**
- * Formatte une date au format français
+ * Formatte une date selon la langue active
  */
 function formatDate(dateString) {
     if (!dateString) return null;
 
     const date = new Date(dateString);
     const options = { year: 'numeric', month: 'long' };
-    return date.toLocaleDateString('fr-FR', options);
+    const locale = currentLanguage === 'en' ? 'en-US' : 'fr-FR';
+    return date.toLocaleDateString(locale, options);
 }
 
 /**
@@ -122,7 +126,8 @@ function formatPeriod(periodeDebut, periodeFin, enCours = false) {
     const debut = formatDate(periodeDebut);
 
     if (enCours) {
-        return `${debut} - Présent`;
+        const presentText = currentLanguage === 'en' ? 'Present' : 'Présent';
+        return `${debut} - ${presentText}`;
     }
 
     if (!periodeFin) {
@@ -138,9 +143,15 @@ function formatPeriod(periodeDebut, periodeFin, enCours = false) {
  */
 function getNiveauPercentage(niveau) {
     const niveaux = {
+        // Français
         'Débutant': 40,
         'Intermédiaire': 60,
         'Avancé': 80,
+        'Expert': 95,
+        // Anglais
+        'Beginner': 40,
+        'Intermediate': 60,
+        'Advanced': 80,
         'Expert': 95
     };
     return niveaux[niveau] || 50;
@@ -183,6 +194,13 @@ function showError(message) {
 }
 
 /**
+ * Obtient le texte dans la langue active
+ */
+function getLocalizedText(frenchText, englishText) {
+    return currentLanguage === 'en' && englishText ? englishText : frenchText;
+}
+
+/**
  * Rend la section Hero
  */
 function renderHeroSection(cvInfo) {
@@ -192,10 +210,10 @@ function renderHeroSection(cvInfo) {
         nameElement.textContent = cvInfo.nom;
     }
 
-    // Mettre à jour le titre
+    // Mettre à jour le titre (avec support bilingue)
     const subtitleElement = document.querySelector('.hero-subtitle');
     if (subtitleElement) {
-        subtitleElement.textContent = cvInfo.titre;
+        subtitleElement.textContent = getLocalizedText(cvInfo.titre, cvInfo.titre_en);
     }
 
     // Mettre à jour la photo (si disponible)
@@ -214,7 +232,7 @@ function renderHeroSection(cvInfo) {
 function renderAboutSection(cvInfo) {
     const bioElement = document.querySelector('.about-text .lead');
     if (bioElement && cvInfo.bio) {
-        bioElement.textContent = cvInfo.bio;
+        bioElement.textContent = getLocalizedText(cvInfo.bio, cvInfo.bio_en);
     }
 
     // Mettre à jour le lien LinkedIn (si disponible)
@@ -247,21 +265,30 @@ function renderExperiencesSection(experiences) {
 
         const periode = formatPeriod(exp.periode_debut, exp.periode_fin, exp.en_cours);
 
+        // Obtenir les textes dans la langue active
+        const titre = getLocalizedText(exp.titre, exp.titre_en);
+        const entreprise = getLocalizedText(exp.entreprise, exp.entreprise_en);
+        const description = getLocalizedText(exp.description, exp.description_en);
+
+        // Déterminer le séparateur de réalisations selon la langue
+        const achievementsMarker = currentLanguage === 'en' ? 'Achievements:' : 'Réalisations:';
+        const showDetailsText = currentLanguage === 'en' ? 'Show details' : 'Afficher les détails';
+
         timelineItem.innerHTML = `
             <div class="timeline-marker"></div>
             <div class="timeline-content">
                 <span class="timeline-date">${periode}</span>
-                <h3>${exp.titre}</h3>
-                <h4>${exp.entreprise}</h4>
-                <p>${exp.description ? exp.description.split('\n\n')[0] : ''}</p>
-                ${exp.description && exp.description.includes('Réalisations:') ? `
-                <button class="experience-toggle" aria-expanded="false" aria-label="Afficher les détails">
+                <h3>${titre}</h3>
+                <h4>${entreprise}</h4>
+                <p>${description ? description.split('\n\n')[0] : ''}</p>
+                ${description && description.includes(achievementsMarker) ? `
+                <button class="experience-toggle" aria-expanded="false" aria-label="${showDetailsText}">
                     <span class="toggle-icon">›</span>
-                    <span class="toggle-text">Afficher les détails</span>
+                    <span class="toggle-text">${showDetailsText}</span>
                 </button>
                 <ul class="achievement-list" hidden>
-                    ${exp.description.split('Réalisations:\n')[1] ?
-                        exp.description.split('Réalisations:\n')[1]
+                    ${description.split(achievementsMarker + '\n')[1] ?
+                        description.split(achievementsMarker + '\n')[1]
                             .split('\n')
                             .filter(line => line.trim().startsWith('•'))
                             .map(line => `<li>${line.trim().substring(1).trim()}</li>`)
@@ -301,14 +328,19 @@ function renderFormationsSection(formations) {
             ? `${formation.annee_debut} - ${formation.annee_fin}`
             : '';
 
+        // Obtenir les textes dans la langue active
+        const diplome = getLocalizedText(formation.diplome, formation.diplome_en);
+        const institution = getLocalizedText(formation.institution, formation.institution_en);
+        const description = getLocalizedText(formation.description, formation.description_en);
+
         // Formater la description en liste
-        const descriptionLines = formation.description ?
-            formation.description.split('\n').filter(line => line.trim()) : [];
+        const descriptionLines = description ?
+            description.split('\n').filter(line => line.trim()) : [];
 
         card.innerHTML = `
             <div class="education-icon">🎓</div>
-            <h3>${formation.diplome}</h3>
-            ${formation.institution ? `<h4>${formation.institution}</h4>` : ''}
+            <h3>${diplome}</h3>
+            ${institution ? `<h4>${institution}</h4>` : ''}
             ${annees ? `<p class="education-years">${annees}</p>` : ''}
             ${descriptionLines.length > 0 ? `
                 <ul class="certification-list">
@@ -339,15 +371,22 @@ function renderCompetencesSection(competencesParCategorie) {
         categoryDiv.setAttribute('data-aos-delay', delay.toString());
         delay += 100;
 
+        // Obtenir le nom de catégorie dans la langue active
+        const categorieLocalized = currentLanguage === 'en' && competences[0].categorie_en
+            ? competences[0].categorie_en
+            : categorie;
+
         categoryDiv.innerHTML = `
-            <h3>${categorie}</h3>
+            <h3>${categorieLocalized}</h3>
             <div class="skill-items">
                 ${competences.map(comp => {
-                    const percentage = getNiveauPercentage(comp.niveau);
+                    const competenceName = getLocalizedText(comp.competence, comp.competence_en);
+                    const niveau = getLocalizedText(comp.niveau, comp.niveau_en);
+                    const percentage = getNiveauPercentage(niveau);
                     return `
                         <div class="skill-item">
                             <div class="skill-info">
-                                <span>${comp.competence}</span>
+                                <span>${competenceName}</span>
                                 <span class="skill-percent">${percentage}%</span>
                             </div>
                             <div class="skill-bar">
@@ -380,23 +419,45 @@ function attachExperienceToggles() {
             const toggleText = this.querySelector('.toggle-text');
             const toggleIcon = this.querySelector('.toggle-icon');
 
+            const showText = currentLanguage === 'en' ? 'Show details' : 'Afficher les détails';
+            const hideText = currentLanguage === 'en' ? 'Hide details' : 'Masquer les détails';
+
             if (isExpanded) {
-                toggleText.textContent = 'Afficher les détails';
+                toggleText.textContent = showText;
                 toggleIcon.style.transform = 'rotate(0deg)';
             } else {
-                toggleText.textContent = 'Masquer les détails';
+                toggleText.textContent = hideText;
                 toggleIcon.style.transform = 'rotate(90deg)';
             }
         });
     });
 }
 
+/**
+ * Recharge le CV avec la nouvelle langue
+ */
+function reloadCVWithLanguage(newLanguage) {
+    console.log(`🌍 Changement de langue vers: ${newLanguage}`);
+    currentLanguage = newLanguage;
+
+    // Forcer le rechargement du CV avec la nouvelle langue
+    renderCV();
+}
+
 // Initialiser le CV au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Initialisation du chargement du CV...');
+
+    // Récupérer la langue sauvegardée
+    currentLanguage = localStorage.getItem('language') || 'fr';
 
     // Attendre un peu pour s'assurer que Supabase est chargé
     setTimeout(() => {
         renderCV();
     }, 100);
+
+    // Écouter les changements de langue
+    window.addEventListener('languageChanged', (event) => {
+        reloadCVWithLanguage(event.detail.lang);
+    });
 });
