@@ -138,14 +138,14 @@ Ce document explique l'architecture recommandée pour permettre à chaque propri
 
 ## 📊 Comparaison des Options
 
-| Critère | Supabase Studio | Interface Custom | Low-Code |
-|---------|----------------|------------------|----------|
-| **Coût** | Gratuit | Temps dev | 20-50$/mois |
-| **Temps setup** | 1 heure | 2-4 semaines | 1-2 jours |
-| **UX** | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **Flexibilité** | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
-| **Maintenance** | Aucune | Moyenne | Faible |
-| **Scalabilité** | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| Critère         | Supabase Studio | Interface Custom   | Low-Code    |
+|---------|----------------|------------------|----------|-----------|
+| **Coût**        | Gratuit         | Temps dev          | 20-50$/mois |
+| **Temps setup** | 1 heure         | 2-4 semaines       | 1-2 jours   |
+| **UX**          | ⭐⭐             | ⭐⭐⭐⭐⭐          | ⭐⭐⭐⭐      |
+| **Flexibilité** | ⭐⭐             | ⭐⭐⭐⭐⭐          | ⭐⭐⭐        |
+| **Maintenance** | Aucune          | Moyenne            | Faible      |
+| **Scalabilité** | ⭐⭐⭐           | ⭐⭐⭐⭐⭐           | ⭐⭐⭐⭐     |
 
 ## 🚀 Recommandation pour Votre Cas
 
