@@ -229,8 +229,8 @@ async function renderCV() {
         const data = await loadCVData();
 
         // NOUVEAU: Tracker la visite (non-bloquant)
-        if (data && data.user_id) {
-            trackCVVisit(data.user_id, CV_SLUG).catch(err => {
+        if (data && data.profile && data.profile.id) {
+            trackCVVisit(data.profile.id, CV_SLUG).catch(err => {
                 console.log('Tracking échoué (non-critique):', err);
             });
         }
