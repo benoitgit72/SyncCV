@@ -580,6 +580,50 @@ body {
 }
 
 /* ============================================
+   Photo Upload
+   ============================================ */
+
+.photo-upload-container {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.photo-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--border-color);
+    background: white;
+    flex-shrink: 0;
+}
+
+.photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-tertiary);
+}
+
+.photo-actions {
+    flex: 1;
+}
+
+.photo-actions .btn {
+    margin-right: 10px;
+}
+
+/* ============================================
    Toast Notifications
    ============================================ */
 

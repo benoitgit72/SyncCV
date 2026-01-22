@@ -145,7 +145,15 @@ async function loadPersonalInfo() {
                 input.value = cvInfo[key];
             }
         });
+
+        // Load photo preview
+        if (cvInfo.photo_url) {
+            loadPhotoPreview(cvInfo.photo_url);
+        }
     }
+
+    // Setup photo upload
+    setupPhotoUpload();
 
     // Setup form submission
     form.onsubmit = async (e) => {
@@ -161,6 +169,104 @@ async function loadPersonalInfo() {
             showToast('Erreur lors de la sauvegarde', 'error');
         }
     };
+}
+
+/**
+ * Setup photo upload functionality
+ */
+function setupPhotoUpload() {
+    const photoInput = document.getElementById('photoInput');
+    const uploadBtn = document.getElementById('uploadPhotoBtn');
+    const deleteBtn = document.getElementById('deletePhotoBtn');
+    const photoPreview = document.getElementById('photoPreview');
+
+    // Click on button opens file picker
+    uploadBtn.onclick = () => {
+        photoInput.click();
+    };
+
+    // Handle file selection
+    photoInput.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            // Show loading
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<span class="spinner"></span> Upload en cours...';
+
+            // Preview image
+            await previewImage(file, photoPreview);
+
+            // Upload to Supabase Storage
+            const photoUrl = await uploadProfilePhoto(currentUser.id, file);
+
+            // Update hidden input and save to database
+            document.getElementById('photo_url').value = photoUrl;
+            await upsertCVInfo(currentUser.id, { photo_url: photoUrl });
+
+            // Show success
+            showToast('Photo uploadée avec succès', 'success');
+            deleteBtn.style.display = 'inline-flex';
+
+        } catch (error) {
+            console.error('Erreur upload:', error);
+            showToast(error.message || 'Erreur lors de l\'upload', 'error');
+        } finally {
+            // Reset button
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = '📸 Choisir une photo';
+            photoInput.value = ''; // Reset input
+        }
+    };
+
+    // Handle photo deletion
+    deleteBtn.onclick = async () => {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer votre photo de profil?')) {
+            return;
+        }
+
+        try {
+            deleteBtn.disabled = true;
+
+            // Delete from storage
+            await deleteProfilePhoto(currentUser.id);
+
+            // Update database
+            await upsertCVInfo(currentUser.id, { photo_url: null });
+
+            // Clear preview
+            photoPreview.style.display = 'none';
+            photoPreview.src = '';
+            document.getElementById('photoPlaceholder').style.display = 'flex';
+            document.getElementById('photo_url').value = '';
+            deleteBtn.style.display = 'none';
+
+            showToast('Photo supprimée', 'success');
+
+        } catch (error) {
+            console.error('Erreur suppression:', error);
+            showToast('Erreur lors de la suppression', 'error');
+        } finally {
+            deleteBtn.disabled = false;
+        }
+    };
+}
+
+/**
+ * Load photo preview
+ */
+function loadPhotoPreview(photoUrl) {
+    if (!photoUrl) return;
+
+    const photoPreview = document.getElementById('photoPreview');
+    const photoPlaceholder = document.getElementById('photoPlaceholder');
+    const deleteBtn = document.getElementById('deletePhotoBtn');
+
+    photoPreview.src = photoUrl;
+    photoPreview.style.display = 'block';
+    photoPlaceholder.style.display = 'none';
+    deleteBtn.style.display = 'inline-flex';
 }
 
 /**

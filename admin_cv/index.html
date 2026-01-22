@@ -114,10 +114,39 @@
                                 <textarea id="bio_en" name="bio_en" rows="4"></textarea>
                             </div>
 
-                            <div class="form-group">
-                                <label for="photo_url">URL de la photo de profil</label>
-                                <input type="url" id="photo_url" name="photo_url" placeholder="https://...">
-                                <small class="help-text">Utilisez un service comme Imgur ou hébergez votre image</small>
+                            <!-- Photo de profil -->
+                            <div class="card" style="margin-top: 30px; background: var(--bg-secondary);">
+                                <h4 style="margin-bottom: 20px;">Photo de profil</h4>
+
+                                <div class="photo-upload-container">
+                                    <div class="photo-preview">
+                                        <img id="photoPreview" src="" alt="Photo de profil" style="display: none;">
+                                        <div id="photoPlaceholder" class="photo-placeholder">
+                                            <span style="font-size: 48px;">👤</span>
+                                            <p style="margin-top: 10px; color: var(--text-secondary);">Aucune photo</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="photo-actions">
+                                        <input
+                                            type="file"
+                                            id="photoInput"
+                                            accept="image/jpeg,image/jpg,image/png,image/webp"
+                                            style="display: none;"
+                                        >
+                                        <button type="button" class="btn btn-primary" id="uploadPhotoBtn">
+                                            📸 Choisir une photo
+                                        </button>
+                                        <button type="button" class="btn btn-danger" id="deletePhotoBtn" style="display: none;">
+                                            🗑️ Supprimer
+                                        </button>
+                                        <p class="help-text" style="margin-top: 10px;">
+                                            JPG, PNG ou WEBP • Max 5 MB • Redimensionnée automatiquement à 400x400px
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" id="photo_url" name="photo_url">
                             </div>
 
                             <div class="form-actions">
@@ -237,6 +266,9 @@
 
     <!-- Data Manager -->
     <script src="js/data-manager.js"></script>
+
+    <!-- Photo Upload Module -->
+    <script src="js/photo-upload.js"></script>
 
     <!-- Main Dashboard Script -->
     <script src="js/dashboard.js"></script>
