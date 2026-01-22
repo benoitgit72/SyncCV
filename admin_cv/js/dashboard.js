@@ -636,6 +636,12 @@ function createNewExperienceModal() {
                     <textarea id="exp_description" rows="4" placeholder="Décrivez vos responsabilités et réalisations..."></textarea>
                 </div>
 
+                <div style="margin-top: 15px; margin-bottom: 15px; text-align: center;">
+                    <button type="button" class="btn btn-secondary" onclick="translateToEnglish()" id="translateToEnBtn">
+                        🇬🇧 Traduire vers l'anglais
+                    </button>
+                </div>
+
                 <div class="divider"></div>
 
                 <!-- Version anglaise -->
@@ -654,6 +660,12 @@ function createNewExperienceModal() {
                 <div class="form-group">
                     <label for="exp_description_en">Description (EN)</label>
                     <textarea id="exp_description_en" rows="4" placeholder="Describe your responsibilities and achievements..."></textarea>
+                </div>
+
+                <div style="margin-top: 15px; margin-bottom: 15px; text-align: center;">
+                    <button type="button" class="btn btn-secondary" onclick="translateToFrench()" id="translateToFrBtn">
+                        🇫🇷 Traduire vers le français
+                    </button>
                 </div>
 
                 <div class="divider"></div>
@@ -733,6 +745,158 @@ async function saveNewExperience() {
     } catch (error) {
         console.error('Erreur:', error);
         showToast('Erreur lors de la création: ' + error.message, 'error');
+    }
+}
+
+/**
+ * Traduire les champs français vers l'anglais
+ */
+async function translateToEnglish() {
+    try {
+        // Récupérer les valeurs françaises
+        const titre = document.getElementById('exp_titre').value.trim();
+        const entreprise = document.getElementById('exp_entreprise').value.trim();
+        const description = document.getElementById('exp_description').value.trim();
+
+        // Validation
+        if (!titre && !entreprise && !description) {
+            showToast('Veuillez remplir au moins un champ français avant de traduire', 'error');
+            return;
+        }
+
+        // Désactiver le bouton pendant la traduction
+        const button = document.getElementById('translateToEnBtn');
+        const originalText = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '⏳ Traduction en cours...';
+
+        // Appeler l'API de traduction
+        const response = await fetch('/api/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: {
+                    titre: titre,
+                    entreprise: entreprise,
+                    description: description
+                },
+                targetLanguage: 'en'
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Erreur lors de la traduction');
+        }
+
+        const data = await response.json();
+        const translation = data.translation;
+
+        // Remplir les champs anglais
+        if (translation.titre) {
+            document.getElementById('exp_titre_en').value = translation.titre;
+        }
+        if (translation.entreprise) {
+            document.getElementById('exp_entreprise_en').value = translation.entreprise;
+        }
+        if (translation.description) {
+            document.getElementById('exp_description_en').value = translation.description;
+        }
+
+        showToast('Traduction réussie vers l\'anglais', 'success');
+
+        // Réactiver le bouton
+        button.disabled = false;
+        button.innerHTML = originalText;
+
+    } catch (error) {
+        console.error('Erreur de traduction:', error);
+        showToast('Erreur: ' + error.message, 'error');
+
+        // Réactiver le bouton
+        const button = document.getElementById('translateToEnBtn');
+        if (button) {
+            button.disabled = false;
+            button.innerHTML = '🇬🇧 Traduire vers l\'anglais';
+        }
+    }
+}
+
+/**
+ * Traduire les champs anglais vers le français
+ */
+async function translateToFrench() {
+    try {
+        // Récupérer les valeurs anglaises
+        const titre = document.getElementById('exp_titre_en').value.trim();
+        const entreprise = document.getElementById('exp_entreprise_en').value.trim();
+        const description = document.getElementById('exp_description_en').value.trim();
+
+        // Validation
+        if (!titre && !entreprise && !description) {
+            showToast('Veuillez remplir au moins un champ anglais avant de traduire', 'error');
+            return;
+        }
+
+        // Désactiver le bouton pendant la traduction
+        const button = document.getElementById('translateToFrBtn');
+        const originalText = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '⏳ Traduction en cours...';
+
+        // Appeler l'API de traduction
+        const response = await fetch('/api/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: {
+                    titre: titre,
+                    entreprise: entreprise,
+                    description: description
+                },
+                targetLanguage: 'fr'
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Erreur lors de la traduction');
+        }
+
+        const data = await response.json();
+        const translation = data.translation;
+
+        // Remplir les champs français
+        if (translation.titre) {
+            document.getElementById('exp_titre').value = translation.titre;
+        }
+        if (translation.entreprise) {
+            document.getElementById('exp_entreprise').value = translation.entreprise;
+        }
+        if (translation.description) {
+            document.getElementById('exp_description').value = translation.description;
+        }
+
+        showToast('Traduction réussie vers le français', 'success');
+
+        // Réactiver le bouton
+        button.disabled = false;
+        button.innerHTML = originalText;
+
+    } catch (error) {
+        console.error('Erreur de traduction:', error);
+        showToast('Erreur: ' + error.message, 'error');
+
+        // Réactiver le bouton
+        const button = document.getElementById('translateToFrBtn');
+        if (button) {
+            button.disabled = false;
+            button.innerHTML = '🇫🇷 Traduire vers le français';
+        }
     }
 }
 
@@ -823,6 +987,12 @@ function createExperienceModal(exp) {
                     <textarea id="exp_description" rows="4" placeholder="Décrivez vos responsabilités et réalisations...">${exp.description || ''}</textarea>
                 </div>
 
+                <div style="margin-top: 15px; margin-bottom: 15px; text-align: center;">
+                    <button type="button" class="btn btn-secondary" onclick="translateToEnglish()" id="translateToEnBtn">
+                        🇬🇧 Traduire vers l'anglais
+                    </button>
+                </div>
+
                 <div class="divider"></div>
 
                 <!-- Version anglaise -->
@@ -841,6 +1011,12 @@ function createExperienceModal(exp) {
                 <div class="form-group">
                     <label for="exp_description_en">Description (EN)</label>
                     <textarea id="exp_description_en" rows="4" placeholder="Describe your responsibilities and achievements...">${exp.description_en || ''}</textarea>
+                </div>
+
+                <div style="margin-top: 15px; margin-bottom: 15px; text-align: center;">
+                    <button type="button" class="btn btn-secondary" onclick="translateToFrench()" id="translateToFrBtn">
+                        🇫🇷 Traduire vers le français
+                    </button>
                 </div>
 
                 <div class="divider"></div>
