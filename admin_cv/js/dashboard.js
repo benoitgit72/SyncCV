@@ -338,28 +338,52 @@ async function loadExperiences() {
 }
 
 /**
- * Create experience list item
+ * Create experience list item (bilingual display)
  */
 function createExperienceItem(exp) {
     const li = document.createElement('li');
-    li.className = 'data-item';
+    li.className = 'data-item exp-bilingual';
 
     const periode = exp.en_cours ?
         `${formatDate(exp.periode_debut)} - Présent` :
         `${formatDate(exp.periode_debut)} - ${formatDate(exp.periode_fin)}`;
 
+    const periodeEn = exp.en_cours ?
+        `${formatDate(exp.periode_debut)} - Present` :
+        `${formatDate(exp.periode_debut)} - ${formatDate(exp.periode_fin)}`;
+
     li.innerHTML = `
-        <div class="data-item-header">
-            <div>
-                <div class="data-item-title">${exp.titre}</div>
-                <div class="data-item-meta">${exp.entreprise} • ${periode}</div>
-            </div>
+        <div class="exp-header">
+            <div class="exp-date-badge">${periode}</div>
             <div class="data-item-actions">
                 <button class="btn btn-secondary btn-sm" onclick="editExperience('${exp.id}')">✏️ Modifier</button>
                 <button class="btn btn-danger btn-sm" onclick="removeExperience('${exp.id}')">🗑️</button>
             </div>
         </div>
-        ${exp.description ? `<p style="margin-top: 10px; color: var(--text-secondary); font-size: 14px;">${exp.description.substring(0, 150)}...</p>` : ''}
+        <div class="exp-content">
+            <div class="exp-lang-column">
+                <div class="lang-label">🇫🇷 Français</div>
+                <div class="exp-title">${exp.titre || '<em>Non renseigné</em>'}</div>
+                <div class="exp-company">${exp.entreprise || '<em>Non renseigné</em>'}</div>
+                ${exp.description ? `<div class="exp-description">${exp.description}</div>` : '<div class="exp-description"><em>Pas de description</em></div>'}
+                ${exp.competences && exp.competences.length > 0 ?
+                    `<div class="exp-skills">
+                        ${exp.competences.map(comp => `<span class="badge badge-info">${comp}</span>`).join('')}
+                    </div>`
+                    : ''}
+            </div>
+            <div class="exp-lang-column">
+                <div class="lang-label">🇬🇧 English</div>
+                <div class="exp-title">${exp.titre_en || '<em style="color: var(--text-tertiary);">Not provided</em>'}</div>
+                <div class="exp-company">${exp.entreprise_en || '<em style="color: var(--text-tertiary);">Not provided</em>'}</div>
+                ${exp.description_en ? `<div class="exp-description">${exp.description_en}</div>` : '<div class="exp-description"><em style="color: var(--text-tertiary);">No description</em></div>'}
+                ${exp.competences && exp.competences.length > 0 ?
+                    `<div class="exp-skills">
+                        ${exp.competences.map(comp => `<span class="badge badge-info">${comp}</span>`).join('')}
+                    </div>`
+                    : ''}
+            </div>
+        </div>
     `;
 
     return li;
