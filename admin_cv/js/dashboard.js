@@ -195,32 +195,52 @@ function setupPhotoUpload() {
             uploadBtn.disabled = true;
             uploadBtn.innerHTML = '<span class="spinner"></span> Upload en cours...';
 
-            // Preview image temporaire depuis le fichier local
-            await previewImage(file, photoPreview);
-
-            // Upload to Supabase Storage
+            // Upload to Supabase Storage (d'abord uploader)
             const photoUrl = await uploadProfilePhoto(currentUser.id, file);
 
             // Update hidden input and save to database
             document.getElementById('photo_url').value = photoUrl;
             await upsertCVInfo(currentUser.id, { photo_url: photoUrl });
 
-            // Forcer le rechargement de la photo depuis Supabase (avec cache busting)
-            const urlWithTimestamp = photoUrl.includes('?')
-                ? `${photoUrl}&t=${Date.now()}`
-                : `${photoUrl}?t=${Date.now()}`;
-            photoPreview.src = urlWithTimestamp;
-            photoPreview.style.display = 'block';
+            // Attendre un peu que Supabase finalise l'upload et propage le fichier
+            await new Promise(resolve => setTimeout(resolve, 500));
 
-            // Cacher le placeholder
-            const photoPlaceholder = document.getElementById('photoPlaceholder');
-            if (photoPlaceholder) {
-                photoPlaceholder.style.display = 'none';
-            }
+            // Charger la photo depuis Supabase avec cache busting
+            const urlWithTimestamp = `${photoUrl}?t=${Date.now()}`;
 
-            // Show success
-            showToast('Photo uploadée avec succès', 'success');
-            deleteBtn.style.display = 'inline-flex';
+            // Créer une nouvelle image pour forcer le rechargement
+            const newImg = new Image();
+            newImg.onload = () => {
+                photoPreview.src = urlWithTimestamp;
+                photoPreview.style.display = 'block';
+
+                // Cacher le placeholder
+                const photoPlaceholder = document.getElementById('photoPlaceholder');
+                if (photoPlaceholder) {
+                    photoPlaceholder.style.display = 'none';
+                }
+
+                // Show success
+                showToast('Photo uploadée avec succès', 'success');
+                deleteBtn.style.display = 'inline-flex';
+            };
+
+            newImg.onerror = () => {
+                // Si l'image ne charge pas, essayer quand même d'afficher
+                photoPreview.src = urlWithTimestamp;
+                photoPreview.style.display = 'block';
+
+                const photoPlaceholder = document.getElementById('photoPlaceholder');
+                if (photoPlaceholder) {
+                    photoPlaceholder.style.display = 'none';
+                }
+
+                showToast('Photo uploadée', 'success');
+                deleteBtn.style.display = 'inline-flex';
+            };
+
+            // Déclencher le chargement
+            newImg.src = urlWithTimestamp;
 
         } catch (error) {
             console.error('Erreur upload:', error);
