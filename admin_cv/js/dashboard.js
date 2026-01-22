@@ -210,6 +210,13 @@ function setupPhotoUpload() {
                 ? `${photoUrl}&t=${Date.now()}`
                 : `${photoUrl}?t=${Date.now()}`;
             photoPreview.src = urlWithTimestamp;
+            photoPreview.style.display = 'block';
+
+            // Cacher le placeholder
+            const photoPlaceholder = document.getElementById('photoPlaceholder');
+            if (photoPlaceholder) {
+                photoPlaceholder.style.display = 'none';
+            }
 
             // Show success
             showToast('Photo uploadée avec succès', 'success');
