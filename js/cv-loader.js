@@ -245,12 +245,17 @@ function renderHeroSection(cvInfo) {
         subtitleElement.textContent = getLocalizedText(cvInfo.titre, cvInfo.titre_en);
     }
 
-    // Mettre à jour la photo (si disponible)
-    if (cvInfo.photo_url) {
-        const photoElement = document.querySelector('.profile-photo');
-        if (photoElement) {
+    // Mettre à jour la photo
+    const photoElement = document.querySelector('.profile-photo');
+    if (photoElement) {
+        if (cvInfo.photo_url) {
+            // Si une photo est définie, l'afficher
             photoElement.src = cvInfo.photo_url;
             photoElement.alt = `${cvInfo.nom} - Photo de profil`;
+            photoElement.style.display = 'block';
+        } else {
+            // Si pas de photo, cacher l'élément image
+            photoElement.style.display = 'none';
         }
     }
 
