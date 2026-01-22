@@ -545,9 +545,24 @@ function showToast(message, type = 'info') {
 
 /**
  * Format date for display
+ * Utilise les méthodes UTC pour éviter les problèmes de fuseau horaire
  */
 function formatDate(dateString) {
     if (!dateString) return '';
+
+    // Parser la date manuellement pour éviter les problèmes de fuseau horaire
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Les mois commencent à 0
+        const day = parseInt(parts[2], 10);
+
+        // Créer une date locale (pas UTC)
+        const date = new Date(year, month, day);
+        return date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' });
+    }
+
+    // Fallback pour les autres formats
     const date = new Date(dateString);
     return date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' });
 }
