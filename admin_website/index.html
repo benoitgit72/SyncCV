@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - SyncCV</title>
+    <link rel="stylesheet" href="css/admin-styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-section="statistics">
+                    <span class="icon">📊</span>
+                    <span>Statistics</span>
+                </a>
+                <a href="#" class="nav-item" data-section="communication">
+                    <span class="icon">📧</span>
+                    <span>Communication</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">Admin</div>
+                        <div class="user-email" id="userEmail">admin@synccv.com</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-full" id="logoutBtn">
+                    Déconnexion
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 id="sectionTitle">Statistics Dashboard</h1>
+            </div>
+
+            <!-- Statistics Section -->
+            <section id="section-statistics" class="content-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Aujourd'hui</h4>
+                        <div class="stat-value" id="visitsToday">-</div>
+                        <div class="stat-label">visites</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Cette semaine</h4>
+                        <div class="stat-value" id="visitsWeek">-</div>
+                        <div class="stat-label">visites</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Mois courant</h4>
+                        <div class="stat-value" id="visitsMonth">-</div>
+                        <div class="stat-label">visites</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Mois précédent</h4>
+                        <div class="stat-value" id="visitsPrevMonth">-</div>
+                        <div class="stat-label">visites</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Top 10 CVs les plus visités</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Slug</th>
+                                <th>Visites (7j)</th>
+                                <th>Visites (30j)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topCvsBody">
+                            <tr><td colspan="4" style="text-align: center; padding: 20px;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Communication Section -->
+            <section id="section-communication" class="content-section" hidden>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Envoyer un message à tous les utilisateurs</h3>
+                    </div>
+                    <form id="messageForm">
+                        <div class="form-group">
+                            <label for="messageSubject">Sujet *</label>
+                            <input
+                                type="text"
+                                id="messageSubject"
+                                name="subject"
+                                required
+                                placeholder="Sujet du message"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="messageContent">Message *</label>
+                            <textarea
+                                id="messageContent"
+                                name="message"
+                                rows="8"
+                                required
+                                placeholder="Contenu du message..."
+                            ></textarea>
+                            <small class="help-text">
+                                Le message sera sauvegardé dans la base de données
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="confirmSend" required>
+                                <span>Je confirme l'envoi de ce message à tous les utilisateurs</span>
+                            </label>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="previewBtn">
+                                👁️ Aperçu
+                            </button>
+                            <button type="submit" class="btn btn-success">
+                                📤 Envoyer le message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h3>Historique des messages</h3>
+                    </div>
+                    <div id="messageHistory">
+                        <p style="text-align: center; padding: 20px;">Chargement...</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" hidden></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/statistics.js"></script>
+    <script src="js/communication.js"></script>
+</body>
+</html>

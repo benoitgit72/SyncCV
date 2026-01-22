@@ -137,6 +137,40 @@ async function loadCVData(slug = CV_SLUG) {
 }
 
 /**
+ * Track CV visit in database
+ */
+async function trackCVVisit(userId, slug) {
+    try {
+        const supabase = getSupabaseClient();
+        if (!supabase) return;
+
+        // Ne pas tracker si l'utilisateur regarde son propre CV
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && user.id === userId) {
+            console.log('⏭️ Visite ignorée (propre CV)');
+            return;
+        }
+
+        const { error } = await supabase
+            .from('cv_visits')
+            .insert([{
+                user_id: userId,
+                slug: slug,
+                user_agent: navigator.userAgent,
+                referrer: document.referrer || null
+            }]);
+
+        if (error) {
+            console.error('❌ Erreur tracking:', error);
+        } else {
+            console.log('✅ Visite enregistrée');
+        }
+    } catch (error) {
+        console.error('❌ Erreur trackCVVisit:', error);
+    }
+}
+
+/**
  * Formatte une date selon la langue active
  */
 function formatDate(dateString) {
@@ -193,6 +227,13 @@ async function renderCV() {
     try {
         // Charger les données
         const data = await loadCVData();
+
+        // NOUVEAU: Tracker la visite (non-bloquant)
+        if (data && data.user_id) {
+            trackCVVisit(data.user_id, CV_SLUG).catch(err => {
+                console.log('Tracking échoué (non-critique):', err);
+            });
+        }
 
         // Rendre chaque section
         renderHeroSection(data.cvInfo);

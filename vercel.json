@@ -15,6 +15,14 @@
       "destination": "/admin_cv/:path*"
     },
     {
+      "source": "/admin_website",
+      "destination": "/admin_website/login.html"
+    },
+    {
+      "source": "/admin_website/:path*",
+      "destination": "/admin_website/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - SyncCV</title>
+    <link rel="stylesheet" href="css/admin-styles.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>SyncCV Admin</h1>
+                <p>Site Administration Panel</p>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="admin@example.com"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="••••••••"
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <span>Se souvenir de moi</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full" id="loginButton">
+                    <span class="btn-text">Se connecter</span>
+                    <span class="btn-loading" hidden>
+                        <span class="spinner"></span> Connexion en cours...
+                    </span>
+                </button>
+
+                <div id="errorMessage" class="error-message" hidden></div>
+            </form>
+
+            <div class="login-footer">
+                <a href="#" id="forgotPassword">Mot de passe oublié?</a>
+                <div class="divider"></div>
+                <p class="help-text">
+                    Accès réservé aux administrateurs uniquement.
+                </p>
+            </div>
+        </div>
+
+        <div class="login-info">
+            <h2>Administrez votre site SyncCV</h2>
+            <ul class="features-list">
+                <li>
+                    <span class="icon">📊</span>
+                    <div>
+                        <strong>Statistiques</strong>
+                        <p>Consultez les visites de CVs, les statistiques par jour, semaine et mois</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="icon">📧</span>
+                    <div>
+                        <strong>Communication</strong>
+                        <p>Envoyez des messages à tous les utilisateurs et consultez l'historique</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="icon">👥</span>
+                    <div>
+                        <strong>Gestion des utilisateurs</strong>
+                        <p>Gérez les comptes utilisateurs et leurs permissions (à venir)</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="icon">⚙️</span>
+                    <div>
+                        <strong>Configuration</strong>
+                        <p>Paramètres système et configuration du site (à venir)</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Supabase Client -->
+    <script src="../js/supabase-client.js"></script>
+
+    <!-- Auth Module -->
+    <script src="js/auth.js"></script>
+
+    <!-- Login Script -->
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const errorMessage = document.getElementById('errorMessage');
+            const loginButton = document.getElementById('loginButton');
+            const btnText = loginButton.querySelector('.btn-text');
+            const btnLoading = loginButton.querySelector('.btn-loading');
+
+            // Show loading state
+            loginButton.disabled = true;
+            btnText.hidden = true;
+            btnLoading.hidden = false;
+            errorMessage.hidden = true;
+
+            try {
+                const data = await signIn(email, password, rememberMe);
+
+                // IMPORTANT: Verify admin status
+                const profile = await getUserProfile(data.user.id);
+                if (!profile || !profile.is_admin) {
+                    await signOut();
+                    throw new Error('Accès refusé. Droits administrateur requis.');
+                }
+
+                // Redirect to dashboard on success
+                window.location.href = './index.html';
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = error.message || 'Erreur de connexion. Vérifiez vos identifiants.';
+                errorMessage.hidden = false;
+
+                // Reset button state
+                loginButton.disabled = false;
+                btnText.hidden = false;
+                btnLoading.hidden = true;
+            }
+        });
+
+        // Forgot password handler
+        document.getElementById('forgotPassword').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+
+            if (!email) {
+                alert('Veuillez entrer votre adresse email pour réinitialiser votre mot de passe.');
+                return;
+            }
+
+            try {
+                await resetPassword(email);
+                alert('Un email de réinitialisation a été envoyé à ' + email);
+            } catch (error) {
+                alert('Erreur: ' + error.message);
+            }
+        });
+
+        // Check if already logged in
+        window.addEventListener('DOMContentLoaded', async () => {
+            const user = await getCurrentUser();
+            if (user) {
+                // Check admin status before redirecting
+                const profile = await getUserProfile(user.id);
+                if (profile && profile.is_admin) {
+                    window.location.href = './index.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
