@@ -1390,8 +1390,326 @@ function showFormationModal() {
     alert('Modal d\'ajout de formation à implémenter. Pour l\'instant, utilisez Supabase Studio.');
 }
 
-function editFormation(id) {
-    alert(`Modification de la formation ${id} à implémenter`);
+/**
+ * Modifier une formation existante
+ */
+async function editFormation(id) {
+    try {
+        // Récupérer la formation à modifier
+        const formations = await getFormations(currentUser.id);
+        const formation = formations.find(f => f.id === id);
+
+        if (!formation) {
+            showToast('Formation non trouvée', 'error');
+            return;
+        }
+
+        // Créer le modal
+        const modal = createFormationModal(formation);
+        document.body.appendChild(modal);
+
+        // Focus sur le premier champ
+        setTimeout(() => {
+            modal.querySelector('input').focus();
+        }, 100);
+    } catch (error) {
+        console.error('Erreur:', error);
+        showToast('Erreur lors du chargement de la formation', 'error');
+    }
+}
+
+/**
+ * Créer le modal de modification de formation
+ */
+function createFormationModal(formation) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.id = 'formationModal';
+
+    modal.innerHTML = `
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Modifier la formation</h3>
+                <button class="modal-close" onclick="closeFormationModal()">&times;</button>
+            </div>
+
+            <form id="formationEditForm" class="modal-body">
+                <!-- Période -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form_annee_debut">Année de début</label>
+                        <input type="text" id="form_annee_debut" placeholder="Ex: 2018" value="${formation.annee_debut || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label for="form_annee_fin">Année de fin</label>
+                        <input type="text" id="form_annee_fin" placeholder="Ex: 2020" value="${formation.annee_fin || ''}">
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Version française -->
+                <h4 style="margin-bottom: 15px; color: var(--text-primary);">🇫🇷 Version française</h4>
+
+                <div class="form-group">
+                    <label for="form_diplome">Diplôme (FR) *</label>
+                    <input type="text" id="form_diplome" required placeholder="Ex: Master en Informatique" value="${formation.diplome || ''}">
+                </div>
+
+                <div class="form-group">
+                    <label for="form_institution">Institution (FR) *</label>
+                    <input type="text" id="form_institution" required placeholder="Ex: Université de Montréal" value="${formation.institution || ''}">
+                </div>
+
+                <div class="form-group">
+                    <label for="form_description">Description (FR)</label>
+                    <textarea id="form_description" rows="3" placeholder="Description optionnelle de la formation...">${formation.description || ''}</textarea>
+                </div>
+
+                <div style="margin-top: 15px; margin-bottom: 15px; text-align: center;">
+                    <button type="button" class="btn btn-secondary" onclick="translateFormationToEnglish()" id="translateFormToEnBtn">
+                        🇬🇧 Traduire vers l'anglais
+                    </button>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Version anglaise -->
+                <h4 style="margin-bottom: 15px; color: var(--text-primary);">🇬🇧 Version anglaise</h4>
+
+                <div class="form-group">
+                    <label for="form_diplome_en">Diplôme (EN)</label>
+                    <input type="text" id="form_diplome_en" placeholder="Ex: Master's Degree in Computer Science" value="${formation.diplome_en || ''}">
+                </div>
+
+                <div class="form-group">
+                    <label for="form_institution_en">Institution (EN)</label>
+                    <input type="text" id="form_institution_en" placeholder="Ex: University of Montreal" value="${formation.institution_en || ''}">
+                </div>
+
+                <div class="form-group">
+                    <label for="form_description_en">Description (EN)</label>
+                    <textarea id="form_description_en" rows="3" placeholder="Optional description of the education...">${formation.description_en || ''}</textarea>
+                </div>
+
+                <div style="margin-top: 15px; margin-bottom: 15px; text-align: center;">
+                    <button type="button" class="btn btn-secondary" onclick="translateFormationToFrench()" id="translateFormToFrBtn">
+                        🇫🇷 Traduire vers le français
+                    </button>
+                </div>
+            </form>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeFormationModal()">Annuler</button>
+                <button type="button" class="btn btn-success" onclick="saveFormation('${formation.id}')">
+                    💾 Enregistrer
+                </button>
+            </div>
+        </div>
+    `;
+
+    return modal;
+}
+
+/**
+ * Fermer le modal de formation
+ */
+function closeFormationModal() {
+    const modal = document.getElementById('formationModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+/**
+ * Sauvegarder la formation modifiée
+ */
+async function saveFormation(id) {
+    try {
+        // Construire l'objet formation
+        const formation = {
+            diplome: document.getElementById('form_diplome').value.trim(),
+            institution: document.getElementById('form_institution').value.trim(),
+            description: document.getElementById('form_description').value.trim() || null,
+            diplome_en: document.getElementById('form_diplome_en').value.trim() || null,
+            institution_en: document.getElementById('form_institution_en').value.trim() || null,
+            description_en: document.getElementById('form_description_en').value.trim() || null,
+            annee_debut: document.getElementById('form_annee_debut').value.trim() || null,
+            annee_fin: document.getElementById('form_annee_fin').value.trim() || null
+        };
+
+        // Validation
+        if (!formation.diplome || !formation.institution) {
+            showToast('Veuillez remplir tous les champs obligatoires (Diplôme et Institution)', 'error');
+            return;
+        }
+
+        // Sauvegarder
+        await updateFormation(id, formation);
+
+        // Fermer le modal
+        closeFormationModal();
+
+        // Recharger la liste
+        await loadFormations();
+
+        showToast('Formation mise à jour avec succès', 'success');
+    } catch (error) {
+        console.error('Erreur:', error);
+        showToast('Erreur lors de la sauvegarde: ' + error.message, 'error');
+    }
+}
+
+/**
+ * Traduire les champs français vers l'anglais (formations)
+ */
+async function translateFormationToEnglish() {
+    try {
+        // Récupérer les valeurs françaises
+        const diplome = document.getElementById('form_diplome').value.trim();
+        const institution = document.getElementById('form_institution').value.trim();
+        const description = document.getElementById('form_description').value.trim();
+
+        // Validation
+        if (!diplome && !institution && !description) {
+            showToast('Veuillez remplir au moins un champ français avant de traduire', 'error');
+            return;
+        }
+
+        // Désactiver le bouton pendant la traduction
+        const button = document.getElementById('translateFormToEnBtn');
+        const originalText = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '⏳ Traduction en cours...';
+
+        // Appeler l'API de traduction
+        const response = await fetch('/api/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: {
+                    titre: diplome,
+                    entreprise: institution,
+                    description: description
+                },
+                targetLanguage: 'en'
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Erreur lors de la traduction');
+        }
+
+        const data = await response.json();
+        const translation = data.translation;
+
+        // Remplir les champs anglais
+        if (translation.titre) {
+            document.getElementById('form_diplome_en').value = translation.titre;
+        }
+        if (translation.entreprise) {
+            document.getElementById('form_institution_en').value = translation.entreprise;
+        }
+        if (translation.description) {
+            document.getElementById('form_description_en').value = translation.description;
+        }
+
+        showToast('Traduction réussie vers l\'anglais', 'success');
+
+        // Réactiver le bouton
+        button.disabled = false;
+        button.innerHTML = originalText;
+
+    } catch (error) {
+        console.error('Erreur de traduction:', error);
+        showToast('Erreur: ' + error.message, 'error');
+
+        // Réactiver le bouton
+        const button = document.getElementById('translateFormToEnBtn');
+        if (button) {
+            button.disabled = false;
+            button.innerHTML = '🇬🇧 Traduire vers l\'anglais';
+        }
+    }
+}
+
+/**
+ * Traduire les champs anglais vers le français (formations)
+ */
+async function translateFormationToFrench() {
+    try {
+        // Récupérer les valeurs anglaises
+        const diplome = document.getElementById('form_diplome_en').value.trim();
+        const institution = document.getElementById('form_institution_en').value.trim();
+        const description = document.getElementById('form_description_en').value.trim();
+
+        // Validation
+        if (!diplome && !institution && !description) {
+            showToast('Veuillez remplir au moins un champ anglais avant de traduire', 'error');
+            return;
+        }
+
+        // Désactiver le bouton pendant la traduction
+        const button = document.getElementById('translateFormToFrBtn');
+        const originalText = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '⏳ Traduction en cours...';
+
+        // Appeler l'API de traduction
+        const response = await fetch('/api/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: {
+                    titre: diplome,
+                    entreprise: institution,
+                    description: description
+                },
+                targetLanguage: 'fr'
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Erreur lors de la traduction');
+        }
+
+        const data = await response.json();
+        const translation = data.translation;
+
+        // Remplir les champs français
+        if (translation.titre) {
+            document.getElementById('form_diplome').value = translation.titre;
+        }
+        if (translation.entreprise) {
+            document.getElementById('form_institution').value = translation.entreprise;
+        }
+        if (translation.description) {
+            document.getElementById('form_description').value = translation.description;
+        }
+
+        showToast('Traduction réussie vers le français', 'success');
+
+        // Réactiver le bouton
+        button.disabled = false;
+        button.innerHTML = originalText;
+
+    } catch (error) {
+        console.error('Erreur de traduction:', error);
+        showToast('Erreur: ' + error.message, 'error');
+
+        // Réactiver le bouton
+        const button = document.getElementById('translateFormToFrBtn');
+        if (button) {
+            button.disabled = false;
+            button.innerHTML = '🇫🇷 Traduire vers le français';
+        }
+    }
 }
 
 async function removeFormation(id) {
