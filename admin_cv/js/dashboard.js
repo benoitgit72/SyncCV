@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Setup navigation
     setupNavigation();
 
+    // Setup sidebar toggle
+    setupSidebarToggle();
+
     // Setup logout button
     document.getElementById('logoutBtn').addEventListener('click', signOut);
 
@@ -75,6 +78,29 @@ function setupNavigation() {
             const section = item.dataset.section;
             await loadSection(section);
         });
+    });
+}
+
+/**
+ * Setup sidebar toggle functionality
+ */
+function setupSidebarToggle() {
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+
+    // Load saved state from localStorage
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    if (isCollapsed) {
+        sidebar.classList.add('collapsed');
+    }
+
+    // Toggle on button click
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+
+        // Save state to localStorage
+        const collapsed = sidebar.classList.contains('collapsed');
+        localStorage.setItem('sidebarCollapsed', collapsed);
     });
 }
 

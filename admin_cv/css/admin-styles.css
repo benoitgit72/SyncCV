@@ -328,17 +328,61 @@ body {
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
+    transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+    width: 70px;
 }
 
 .sidebar-header {
     padding: 20px;
     border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .sidebar-header h1 {
     font-size: 24px;
     color: var(--primary-color);
     font-weight: bold;
+    transition: opacity 0.2s ease;
+}
+
+.sidebar.collapsed .sidebar-header h1 {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidebar-toggle {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.sidebar-toggle:hover {
+    background: var(--bg-secondary);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.sidebar.collapsed .sidebar-toggle .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+    display: inline-block;
 }
 
 .sidebar-nav {
@@ -357,6 +401,15 @@ body {
     cursor: pointer;
 }
 
+.sidebar.collapsed .nav-item {
+    justify-content: center;
+    padding: 12px;
+}
+
+.sidebar.collapsed .nav-item span:not(.icon) {
+    display: none;
+}
+
 .nav-item:hover {
     background: var(--bg-secondary);
     color: var(--text-primary);
@@ -371,6 +424,7 @@ body {
 
 .nav-item .icon {
     font-size: 20px;
+    min-width: 20px;
 }
 
 .sidebar-footer {
@@ -378,11 +432,30 @@ body {
     border-top: 1px solid var(--border-color);
 }
 
+.sidebar.collapsed .sidebar-footer {
+    padding: 15px;
+}
+
 .user-info {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 15px;
+}
+
+.sidebar.collapsed .user-info {
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar.collapsed .user-details {
+    display: none;
+}
+
+.sidebar.collapsed .btn-full {
+    width: auto;
+    padding: 8px;
+    font-size: 12px;
 }
 
 .user-avatar {
@@ -395,6 +468,7 @@ body {
     justify-content: center;
     color: white;
     font-weight: bold;
+    flex-shrink: 0;
 }
 
 .user-details h3 {
