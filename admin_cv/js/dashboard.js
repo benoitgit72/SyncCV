@@ -1930,8 +1930,14 @@ function createNewCompetenceModal() {
 
                 <div class="form-group">
                     <label for="comp_niveau">Niveau (FR)</label>
-                    <input type="text" id="comp_niveau" placeholder="Ex: Avancé">
-                    <small class="help-text">Optionnel: Débutant, Intermédiaire, Avancé, Expert...</small>
+                    <select id="comp_niveau">
+                        <option value="">-- Aucun --</option>
+                        <option value="Débutant">Débutant</option>
+                        <option value="Intermédiaire">Intermédiaire</option>
+                        <option value="Avancé">Avancé</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                    <small class="help-text">Niveau de maîtrise de cette compétence</small>
                 </div>
 
                 <div style="margin-top: 15px; margin-bottom: 15px; text-align: center;">
@@ -1957,7 +1963,14 @@ function createNewCompetenceModal() {
 
                 <div class="form-group">
                     <label for="comp_niveau_en">Niveau (EN)</label>
-                    <input type="text" id="comp_niveau_en" placeholder="Ex: Advanced">
+                    <select id="comp_niveau_en">
+                        <option value="">-- None --</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                    <small class="help-text">Skill proficiency level</small>
                 </div>
 
                 <div style="margin-top: 15px; margin-bottom: 15px; text-align: center;">
@@ -2069,8 +2082,14 @@ function createCompetenceModal(competence) {
 
                 <div class="form-group">
                     <label for="comp_niveau">Niveau (FR)</label>
-                    <input type="text" id="comp_niveau" placeholder="Ex: Avancé" value="${competence.niveau || ''}">
-                    <small class="help-text">Optionnel: Débutant, Intermédiaire, Avancé, Expert...</small>
+                    <select id="comp_niveau">
+                        <option value="" ${!competence.niveau ? 'selected' : ''}>-- Aucun --</option>
+                        <option value="Débutant" ${competence.niveau === 'Débutant' ? 'selected' : ''}>Débutant</option>
+                        <option value="Intermédiaire" ${competence.niveau === 'Intermédiaire' ? 'selected' : ''}>Intermédiaire</option>
+                        <option value="Avancé" ${competence.niveau === 'Avancé' ? 'selected' : ''}>Avancé</option>
+                        <option value="Expert" ${competence.niveau === 'Expert' ? 'selected' : ''}>Expert</option>
+                    </select>
+                    <small class="help-text">Niveau de maîtrise de cette compétence</small>
                 </div>
 
                 <div style="margin-top: 15px; margin-bottom: 15px; text-align: center;">
@@ -2096,7 +2115,14 @@ function createCompetenceModal(competence) {
 
                 <div class="form-group">
                     <label for="comp_niveau_en">Niveau (EN)</label>
-                    <input type="text" id="comp_niveau_en" placeholder="Ex: Advanced" value="${competence.niveau_en || ''}">
+                    <select id="comp_niveau_en">
+                        <option value="" ${!competence.niveau_en ? 'selected' : ''}>-- None --</option>
+                        <option value="Beginner" ${competence.niveau_en === 'Beginner' ? 'selected' : ''}>Beginner</option>
+                        <option value="Intermediate" ${competence.niveau_en === 'Intermediate' ? 'selected' : ''}>Intermediate</option>
+                        <option value="Advanced" ${competence.niveau_en === 'Advanced' ? 'selected' : ''}>Advanced</option>
+                        <option value="Expert" ${competence.niveau_en === 'Expert' ? 'selected' : ''}>Expert</option>
+                    </select>
+                    <small class="help-text">Skill proficiency level</small>
                 </div>
 
                 <div style="margin-top: 15px; margin-bottom: 15px; text-align: center;">
