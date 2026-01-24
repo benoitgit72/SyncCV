@@ -226,6 +226,13 @@ function getNiveauPercentage(niveau) {
 function applyThemeToPublicCV(theme) {
     const themeName = theme || 'purple-gradient';
     document.body.setAttribute('data-theme', themeName);
+    document.documentElement.setAttribute('data-theme', themeName);
+
+    // Sauvegarder dans localStorage pour éviter le flash au prochain chargement
+    if (CV_SLUG) {
+        localStorage.setItem('cv_theme_' + CV_SLUG, themeName);
+    }
+
     console.log(`🎨 Thème appliqué au CV public: ${themeName}`);
 }
 

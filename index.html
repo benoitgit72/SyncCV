@@ -6,6 +6,21 @@
     <meta name="description" content="CV interactif de Benoit Gaulin">
     <title>Benoit Gaulin - CV Interactif</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Charger le thème immédiatement pour éviter le flash -->
+    <script>
+        (function() {
+            // Extraire le slug depuis l'URL
+            const slug = window.location.pathname.split('/').filter(s => s.length > 0)[0];
+            if (slug) {
+                // Charger le thème depuis localStorage basé sur le slug
+                const savedTheme = localStorage.getItem('cv_theme_' + slug);
+                if (savedTheme) {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                    console.log('🎨 Thème pré-chargé:', savedTheme);
+                }
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- Navigation -->
