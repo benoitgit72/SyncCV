@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load user profile
     await loadUserProfile();
 
+    // Initialize theme
+    await initializeTheme(currentUser.id);
+
     // Setup navigation
     setupNavigation();
 
@@ -577,6 +580,13 @@ async function loadSettings() {
     if (cvInfo && cvInfo.formspree_id) {
         document.getElementById('formspree_id').value = cvInfo.formspree_id;
     }
+
+    // Setup theme selector
+    setupThemeSelector(currentUser.id);
+
+    // Load and display current theme
+    const currentTheme = currentProfile?.theme || 'purple-gradient';
+    applyTheme(currentTheme);
 
     // Setup form submission
     form.onsubmit = async (e) => {

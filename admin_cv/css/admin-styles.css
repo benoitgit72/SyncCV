@@ -1097,3 +1097,189 @@ body {
         padding: 20px;
     }
 }
+
+/* ============================================
+   Theme Selector Styles
+   ============================================ */
+
+.theme-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.theme-option {
+    position: relative;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--bg-secondary);
+}
+
+.theme-option:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.theme-option.active {
+    border-color: var(--primary-color);
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.theme-preview {
+    width: 100%;
+    height: 80px;
+    border-radius: var(--border-radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+}
+
+.theme-preview-gradient {
+    width: 100%;
+    height: 100%;
+    background: var(--accent-gradient);
+}
+
+.theme-purple-gradient .theme-preview-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.theme-ocean-blue .theme-preview-gradient {
+    background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+}
+
+.theme-forest-green .theme-preview-gradient {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+}
+
+.theme-info {
+    text-align: center;
+}
+
+.theme-info strong {
+    display: block;
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.theme-info p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.theme-check {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.theme-option.active .theme-check {
+    display: flex;
+}
+
+/* ============================================
+   Theme Color Variables - Ocean Blue
+   ============================================ */
+
+body[data-theme="ocean-blue"] {
+    --primary-color: #0EA5E9;
+    --primary-dark: #0284C7;
+    --primary-light: #38BDF8;
+    --secondary-color: #0369A1;
+}
+
+body[data-theme="ocean-blue"] .btn-primary {
+    background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+}
+
+body[data-theme="ocean-blue"] .nav-item.active {
+    background: rgba(14, 165, 233, 0.1);
+    color: #0EA5E9;
+    border-left: 3px solid #0EA5E9;
+}
+
+body[data-theme="ocean-blue"] .user-avatar {
+    background: linear-gradient(135deg, #0EA5E9, #0284C7);
+}
+
+body[data-theme="ocean-blue"] .nav-brand,
+body[data-theme="ocean-blue"] .sidebar-header h1 {
+    background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body[data-theme="ocean-blue"] .login-page {
+    background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+}
+
+body[data-theme="ocean-blue"] .exp-date-badge {
+    background: linear-gradient(135deg, #0EA5E9, #0284C7);
+}
+
+/* ============================================
+   Theme Color Variables - Forest Green
+   ============================================ */
+
+body[data-theme="forest-green"] {
+    --primary-color: #10B981;
+    --primary-dark: #059669;
+    --primary-light: #34D399;
+    --secondary-color: #047857;
+}
+
+body[data-theme="forest-green"] .btn-primary {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+}
+
+body[data-theme="forest-green"] .nav-item.active {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+    border-left: 3px solid #10B981;
+}
+
+body[data-theme="forest-green"] .user-avatar {
+    background: linear-gradient(135deg, #10B981, #059669);
+}
+
+body[data-theme="forest-green"] .nav-brand,
+body[data-theme="forest-green"] .sidebar-header h1 {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body[data-theme="forest-green"] .login-page {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+}
+
+body[data-theme="forest-green"] .exp-date-badge {
+    background: linear-gradient(135deg, #10B981, #059669);
+}
+
+/* Responsive theme selector */
+@media (max-width: 768px) {
+    .theme-selector {
+        grid-template-columns: 1fr;
+    }
+}
