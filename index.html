@@ -30,6 +30,25 @@
                         <span class="lang-text">FR</span>
                     </button>
                 </li>
+                <li class="more-options">
+                    <button id="moreOptionsBtn" class="more-options-btn" aria-label="Plus d'options" aria-haspopup="true" aria-expanded="false">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="5" r="2"/>
+                            <circle cx="12" cy="12" r="2"/>
+                            <circle cx="12" cy="19" r="2"/>
+                        </svg>
+                    </button>
+                    <div id="moreOptionsMenu" class="more-options-menu" role="menu" hidden>
+                        <button class="menu-item" id="downloadPdfBtn" role="menuitem">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            <span>Télécharger en PDF</span>
+                        </button>
+                    </div>
+                </li>
             </ul>
         </div>
     </nav>
@@ -798,10 +817,16 @@
     <script src="js/supabase-client.js"></script>
     <script src="js/cv-loader.js"></script>
 
+    <!-- html2pdf.js pour la génération de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <!-- Scripts existants -->
     <script src="translations.js"></script>
     <script src="language.js"></script>
     <script src="script.js"></script>
     <script src="chatbot.js"></script>
+
+    <!-- Script pour le menu et le PDF -->
+    <script src="js/more-options.js"></script>
 </body>
 </html>
