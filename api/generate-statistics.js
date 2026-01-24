@@ -6,32 +6,32 @@ import { createClient } from '@supabase/supabase-js';
 // Simple in-memory rate limiting
 const rateLimitStore = new Map();
 
-// Limites de taux (plus strictes que le chatbot car plus coûteux)
+// Limites de taux par utilisateur (rate limit par userId au lieu de IP)
 const RATE_LIMITS = {
-    minute: { limit: 2, window: 60 * 1000 }, // 2 requêtes par minute
-    hour: { limit: 5, window: 60 * 60 * 1000 }, // 5 requêtes par heure
-    day: { limit: 10, window: 24 * 60 * 60 * 1000 }, // 10 requêtes par jour
+    minute: { limit: 3, window: 60 * 1000 }, // 3 requêtes par minute
+    hour: { limit: 10, window: 60 * 60 * 1000 }, // 10 requêtes par heure
+    day: { limit: 20, window: 24 * 60 * 60 * 1000 }, // 20 requêtes par jour
 };
 
-// Fonction pour vérifier et mettre à jour le rate limit
-function checkRateLimit(ip) {
+// Fonction pour vérifier et mettre à jour le rate limit par userId
+function checkRateLimit(userId) {
     const now = Date.now();
 
-    if (!rateLimitStore.has(ip)) {
-        rateLimitStore.set(ip, {
+    if (!rateLimitStore.has(userId)) {
+        rateLimitStore.set(userId, {
             minute: [],
             hour: [],
             day: []
         });
     }
 
-    const ipData = rateLimitStore.get(ip);
+    const userData = rateLimitStore.get(userId);
 
     for (const [period, config] of Object.entries(RATE_LIMITS)) {
-        ipData[period] = ipData[period].filter(timestamp => now - timestamp < config.window);
+        userData[period] = userData[period].filter(timestamp => now - timestamp < config.window);
 
-        if (ipData[period].length >= config.limit) {
-            const oldestTimestamp = Math.min(...ipData[period]);
+        if (userData[period].length >= config.limit) {
+            const oldestTimestamp = Math.min(...userData[period]);
             const resetTime = oldestTimestamp + config.window;
             const waitTime = Math.ceil((resetTime - now) / 60000);
 
@@ -39,25 +39,34 @@ function checkRateLimit(ip) {
                 allowed: false,
                 period: period,
                 resetTime: resetTime,
-                waitTime: waitTime
+                waitTime: waitTime,
+                remaining: 0,
+                total: config.limit
             };
         }
     }
 
-    ipData.minute.push(now);
-    ipData.hour.push(now);
-    ipData.day.push(now);
+    userData.minute.push(now);
+    userData.hour.push(now);
+    userData.day.push(now);
 
-    return { allowed: true };
+    return {
+        allowed: true,
+        remaining: {
+            minute: RATE_LIMITS.minute.limit - userData.minute.length,
+            hour: RATE_LIMITS.hour.limit - userData.hour.length,
+            day: RATE_LIMITS.day.limit - userData.day.length
+        }
+    };
 }
 
 // Nettoyer périodiquement le store
 setInterval(() => {
     const now = Date.now();
-    for (const [ip, data] of rateLimitStore.entries()) {
+    for (const [userId, data] of rateLimitStore.entries()) {
         const hasRecentActivity = data.day.some(timestamp => now - timestamp < RATE_LIMITS.day.window);
         if (!hasRecentActivity) {
-            rateLimitStore.delete(ip);
+            rateLimitStore.delete(userId);
         }
     }
 }, 60 * 60 * 1000);
@@ -229,41 +238,39 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Obtenir l'adresse IP du client pour le rate limiting
-        const ip = req.headers['x-forwarded-for']?.split(',')[0] ||
-                   req.headers['x-real-ip'] ||
-                   req.connection?.remoteAddress ||
-                   req.socket?.remoteAddress ||
-                   'unknown';
-
-        // Vérifier le rate limit
-        const rateLimitResult = checkRateLimit(ip);
-
-        if (!rateLimitResult.allowed) {
-            const { waitTime, period } = rateLimitResult;
-            let errorMessage;
-
-            if (period === 'minute') {
-                errorMessage = `Trop de requêtes. Veuillez réessayer dans ${waitTime} minute${waitTime > 1 ? 's' : ''}.`;
-            } else if (period === 'hour') {
-                errorMessage = `Trop de requêtes. Veuillez réessayer dans ${waitTime} minute${waitTime > 1 ? 's' : ''}.`;
-            } else {
-                const waitHours = Math.ceil(waitTime / 60);
-                errorMessage = `Trop de requêtes. Veuillez réessayer dans ${waitHours} heure${waitHours > 1 ? 's' : ''}.`;
-            }
-
-            return res.status(429).json({
-                error: errorMessage,
-                retryAfter: rateLimitResult.resetTime
-            });
-        }
-
-        // Extraire userId du corps de la requête
+        // Extraire userId du corps de la requête AVANT le rate limiting
         const { userId } = req.body;
 
         if (!userId) {
             return res.status(400).json({ error: 'userId is required' });
         }
+
+        // Vérifier le rate limit par userId (chaque utilisateur a son propre quota)
+        const rateLimitResult = checkRateLimit(userId);
+
+        if (!rateLimitResult.allowed) {
+            const { waitTime, period, total, remaining } = rateLimitResult;
+            let errorMessage;
+
+            if (period === 'minute') {
+                errorMessage = `Limite atteinte: ${total} requêtes par minute maximum. Veuillez réessayer dans ${waitTime} minute${waitTime > 1 ? 's' : ''}.`;
+            } else if (period === 'hour') {
+                errorMessage = `Limite atteinte: ${total} requêtes par heure maximum. Veuillez réessayer dans ${waitTime} minute${waitTime > 1 ? 's' : ''}.`;
+            } else {
+                const waitHours = Math.ceil(waitTime / 60);
+                errorMessage = `Limite atteinte: ${total} requêtes par jour maximum. Veuillez réessayer dans ${waitHours} heure${waitHours > 1 ? 's' : ''}.`;
+            }
+
+            console.log(`⏱️ Rate limit dépassé pour userId: ${userId}, période: ${period}`);
+
+            return res.status(429).json({
+                error: errorMessage,
+                retryAfter: rateLimitResult.resetTime,
+                remaining: remaining
+            });
+        }
+
+        console.log(`✅ Rate limit OK pour userId: ${userId}. Quotas restants:`, rateLimitResult.remaining);
 
         // Vérifier que les clés API sont configurées
         if (!process.env.ANTHROPIC_API_KEY) {
