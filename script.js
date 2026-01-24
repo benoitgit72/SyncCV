@@ -114,34 +114,24 @@ const observerOptions = {
     rootMargin: '0px'
 };
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting && !hasAnimated) {
-            // Petit délai pour s'assurer que le contenu dynamique est chargé
-            setTimeout(() => {
-                animateCounters();
-                hasAnimated = true;
-            }, 100);
-        }
-    });
-}, observerOptions);
-
-// Observer la section About
-const aboutSection = document.querySelector('.about-section');
-if (aboutSection) {
-    observer.observe(aboutSection);
-} else {
-    console.warn('⚠️ About section not found for counter animation');
-}
-
-// Fallback: animer après un délai si l'observer ne se déclenche pas
-setTimeout(() => {
-    if (!hasAnimated && document.querySelector('.stat-number')) {
-        console.log('📊 Fallback: animating counters after delay');
-        animateCounters();
-        hasAnimated = true;
-    }
-}, 3000);
+// IntersectionObserver et Fallback désactivés - l'animation est maintenant gérée par cv-loader.js
+// après le chargement des statistiques depuis Supabase pour éviter les doubles animations
+//
+// const observer = new IntersectionObserver((entries) => {
+//     entries.forEach(entry => {
+//         if (entry.isIntersecting && !hasAnimated) {
+//             setTimeout(() => {
+//                 animateCounters();
+//                 hasAnimated = true;
+//             }, 100);
+//         }
+//     });
+// }, observerOptions);
+//
+// const aboutSection = document.querySelector('.about-section');
+// if (aboutSection) {
+//     observer.observe(aboutSection);
+// }
 
 // Fonction publique pour forcer l'animation (appelée après changement de langue ou rafraîchissement)
 window.triggerStatsAnimation = () => {
