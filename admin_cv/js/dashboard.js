@@ -351,6 +351,11 @@ async function loadExperiences() {
 
     list.innerHTML = '';
 
+    // Setup add button (must be done before early return)
+    document.getElementById('addExperienceBtn').onclick = () => {
+        showExperienceModal();
+    };
+
     if (experiences.length === 0) {
         empty.hidden = false;
         list.hidden = true;
@@ -364,11 +369,6 @@ async function loadExperiences() {
         const item = createExperienceItem(exp);
         list.appendChild(item);
     });
-
-    // Setup add button
-    document.getElementById('addExperienceBtn').onclick = () => {
-        showExperienceModal();
-    };
 }
 
 /**
@@ -438,6 +438,11 @@ async function loadFormations() {
 
     list.innerHTML = '';
 
+    // Setup add button (must be done before early return)
+    document.getElementById('addFormationBtn').onclick = () => {
+        showFormationModal();
+    };
+
     if (formations.length === 0) {
         empty.hidden = false;
         list.hidden = true;
@@ -451,11 +456,6 @@ async function loadFormations() {
         const item = createFormationItem(formation);
         list.appendChild(item);
     });
-
-    // Setup add button
-    document.getElementById('addFormationBtn').onclick = () => {
-        showFormationModal();
-    };
 }
 
 /**
@@ -511,6 +511,11 @@ async function loadCompetences() {
 
     list.innerHTML = '';
 
+    // Setup add button (must be done before early return)
+    document.getElementById('addCompetenceBtn').onclick = () => {
+        showCompetenceModal();
+    };
+
     if (competences.length === 0) {
         empty.hidden = false;
         list.hidden = true;
@@ -562,11 +567,6 @@ async function loadCompetences() {
         `;
         list.appendChild(categoryItem);
     });
-
-    // Setup add button
-    document.getElementById('addCompetenceBtn').onclick = () => {
-        showCompetenceModal();
-    };
 }
 
 /**
