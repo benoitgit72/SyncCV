@@ -5,37 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="CV interactif de Benoit Gaulin">
     <title>Benoit Gaulin - CV Interactif</title>
-    <!-- Charger le thème immédiatement pour éviter le flash -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Appliquer le thème immédiatement avant tout contenu -->
     <script>
         (function() {
-            // Extraire le slug depuis l'URL
             const slug = window.location.pathname.split('/').filter(s => s.length > 0)[0];
             if (slug) {
-                // Charger le thème depuis localStorage basé sur le slug
                 const savedTheme = localStorage.getItem('cv_theme_' + slug);
                 if (savedTheme) {
-                    // Définir les variables CSS immédiatement via un style inline
-                    const themes = {
-                        'ocean-blue': '--primary-color: #1e88e5; --secondary-color: #64b5f6; --gradient-start: #1565c0; --gradient-end: #42a5f5;',
-                        'forest-green': '--primary-color: #43a047; --secondary-color: #81c784; --gradient-start: #2e7d32; --gradient-end: #66bb6a;',
-                        'sunset-orange': '--primary-color: #fb8c00; --secondary-color: #ffb74d; --gradient-start: #ef6c00; --gradient-end: #ffa726;',
-                        'purple-gradient': '--primary-color: #7c4dff; --secondary-color: #b388ff; --gradient-start: #651fff; --gradient-end: #9575cd;'
-                    };
-
-                    const themeVars = themes[savedTheme] || themes['purple-gradient'];
-                    const style = document.createElement('style');
-                    style.id = 'theme-preload';
-                    style.textContent = ':root { ' + themeVars + ' }';
-                    document.head.appendChild(style);
-
-                    console.log('🎨 Thème pré-chargé:', savedTheme);
+                    document.body.setAttribute('data-theme', savedTheme);
                 }
             }
         })();
     </script>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
