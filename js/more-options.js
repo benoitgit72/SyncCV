@@ -191,187 +191,19 @@ function buildPDFHTML(data, lang) {
     const formations = data.formations || [];
     const competences = data.competences || [];
 
-    return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <style>
-                * {
-                    margin: 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                }
+    // Build HTML with inline styles for better compatibility
+    let html = '<div style="font-family: Arial, sans-serif; background: white; color: #000; padding: 20px; max-width: 800px;">';
 
-                body {
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    background: white;
-                    color: #1a1a1a;
-                    line-height: 1.6;
-                    font-size: 11pt;
-                }
+    html += buildHeaderSection(cvInfo, isEnglish);
+    html += buildAboutSection(cvInfo, isEnglish);
+    html += buildExperiencesSection(experiences, isEnglish);
+    html += buildFormationsSection(formations, isEnglish);
+    html += buildCompetencesSection(competences, isEnglish);
+    html += buildFooter(cvInfo, isEnglish);
 
-                .pdf-container {
-                    max-width: 210mm;
-                    margin: 0 auto;
-                    background: white;
-                    padding: 20px;
-                }
+    html += '</div>';
 
-                .pdf-header {
-                    text-align: center;
-                    margin-bottom: 30px;
-                    padding-bottom: 20px;
-                    border-bottom: 3px solid #1e40af;
-                }
-
-                .pdf-header h1 {
-                    color: #1e40af;
-                    font-size: 28pt;
-                    margin-bottom: 8px;
-                    font-weight: 700;
-                }
-
-                .pdf-header .title {
-                    color: #1a1a1a;
-                    font-size: 14pt;
-                    font-weight: 500;
-                    margin-bottom: 12px;
-                }
-
-                .pdf-header .contact-info {
-                    color: #4b5563;
-                    font-size: 10pt;
-                    line-height: 1.8;
-                }
-
-                .pdf-section {
-                    margin-bottom: 25px;
-                    page-break-inside: avoid;
-                }
-
-                .section-title {
-                    color: #1e40af;
-                    font-size: 16pt;
-                    font-weight: 700;
-                    margin-bottom: 15px;
-                    padding-bottom: 8px;
-                    border-bottom: 2px solid #1e40af;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                }
-
-                .about-text {
-                    color: #1a1a1a;
-                    font-size: 11pt;
-                    text-align: justify;
-                    line-height: 1.7;
-                    margin-bottom: 15px;
-                }
-
-                .experience-item, .formation-item {
-                    margin-bottom: 20px;
-                    page-break-inside: avoid;
-                }
-
-                .exp-header {
-                    margin-bottom: 8px;
-                }
-
-                .exp-date {
-                    color: #1e40af;
-                    font-weight: 700;
-                    font-size: 10pt;
-                    margin-bottom: 5px;
-                }
-
-                .exp-title {
-                    color: #1a1a1a;
-                    font-size: 12pt;
-                    font-weight: 700;
-                    margin-bottom: 3px;
-                }
-
-                .exp-company {
-                    color: #4b5563;
-                    font-size: 11pt;
-                    font-weight: 600;
-                    margin-bottom: 8px;
-                }
-
-                .exp-description {
-                    color: #1a1a1a;
-                    font-size: 10pt;
-                    line-height: 1.6;
-                    text-align: justify;
-                    margin-bottom: 8px;
-                }
-
-                .exp-skills {
-                    margin-top: 8px;
-                }
-
-                .skill-tag {
-                    display: inline-block;
-                    background: #e0e7ff;
-                    color: #1e40af;
-                    padding: 3px 10px;
-                    border-radius: 12px;
-                    font-size: 9pt;
-                    margin-right: 6px;
-                    margin-bottom: 4px;
-                    font-weight: 500;
-                }
-
-                .competence-category {
-                    margin-bottom: 15px;
-                    page-break-inside: avoid;
-                }
-
-                .category-title {
-                    color: #1e40af;
-                    font-size: 11pt;
-                    font-weight: 700;
-                    margin-bottom: 8px;
-                }
-
-                .competence-list {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 8px;
-                }
-
-                .competence-item {
-                    background: #f3f4f6;
-                    color: #1a1a1a;
-                    padding: 5px 12px;
-                    border-radius: 6px;
-                    font-size: 10pt;
-                    font-weight: 500;
-                }
-
-                .pdf-footer {
-                    margin-top: 30px;
-                    padding-top: 15px;
-                    border-top: 1px solid #e5e7eb;
-                    text-align: center;
-                    color: #6b7280;
-                    font-size: 9pt;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="pdf-container">
-                ${buildHeaderSection(cvInfo, isEnglish)}
-                ${buildAboutSection(cvInfo, isEnglish)}
-                ${buildExperiencesSection(experiences, isEnglish)}
-                ${buildFormationsSection(formations, isEnglish)}
-                ${buildCompetencesSection(competences, isEnglish)}
-                ${buildFooter(cvInfo, isEnglish)}
-            </div>
-        </body>
-        </html>
-    `;
+    return html;
 }
 
 /**
@@ -384,10 +216,10 @@ function buildHeaderSection(cvInfo, isEnglish) {
     if (cvInfo.linkedin) contactParts.push(cvInfo.linkedin);
 
     return `
-        <div class="pdf-header">
-            <h1>${cvInfo.nom || ''}</h1>
-            <div class="title">${isEnglish ? (cvInfo.titre_en || cvInfo.titre) : cvInfo.titre}</div>
-            ${contactParts.length > 0 ? `<div class="contact-info">${contactParts.join(' • ')}</div>` : ''}
+        <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #1e40af;">
+            <h1 style="color: #1e40af; font-size: 32px; margin: 0 0 10px 0; font-weight: 700;">${cvInfo.nom || ''}</h1>
+            <div style="color: #1a1a1a; font-size: 18px; margin-bottom: 10px; font-weight: 500;">${isEnglish ? (cvInfo.titre_en || cvInfo.titre) : cvInfo.titre}</div>
+            ${contactParts.length > 0 ? `<div style="color: #4b5563; font-size: 14px;">${contactParts.join(' • ')}</div>` : ''}
         </div>
     `;
 }
@@ -401,9 +233,9 @@ function buildAboutSection(cvInfo, isEnglish) {
     if (!bio) return '';
 
     return `
-        <div class="pdf-section">
-            <h2 class="section-title">${isEnglish ? 'About Me' : 'À Propos'}</h2>
-            <p class="about-text">${bio}</p>
+        <div style="margin-bottom: 25px; page-break-inside: avoid;">
+            <h2 style="color: #1e40af; font-size: 20px; font-weight: 700; margin: 0 0 15px 0; padding-bottom: 8px; border-bottom: 2px solid #1e40af; text-transform: uppercase;">${isEnglish ? 'About Me' : 'À Propos'}</h2>
+            <p style="color: #1a1a1a; font-size: 14px; line-height: 1.6; margin: 0;">${bio}</p>
         </div>
     `;
 }
@@ -423,16 +255,16 @@ function buildExperiencesSection(experiences, isEnglish) {
         const dateFin = exp.en_cours ? (isEnglish ? 'Present' : 'Présent') : formatDateForPDF(exp.periode_fin);
 
         return `
-            <div class="experience-item">
-                <div class="exp-header">
-                    <div class="exp-date">${dateDebut} - ${dateFin}</div>
-                    <div class="exp-title">${titre}</div>
-                    <div class="exp-company">${entreprise}</div>
+            <div style="margin-bottom: 20px; page-break-inside: avoid;">
+                <div style="margin-bottom: 8px;">
+                    <div style="color: #1e40af; font-size: 12px; font-weight: 600; margin-bottom: 4px;">${dateDebut} - ${dateFin}</div>
+                    <div style="color: #1a1a1a; font-size: 16px; font-weight: 700; margin-bottom: 2px;">${titre}</div>
+                    <div style="color: #4b5563; font-size: 14px; font-weight: 600;">${entreprise}</div>
                 </div>
-                ${description ? `<div class="exp-description">${description}</div>` : ''}
+                ${description ? `<div style="color: #1a1a1a; font-size: 14px; line-height: 1.6; margin-bottom: 8px;">${description}</div>` : ''}
                 ${exp.competences && exp.competences.length > 0 ? `
-                    <div class="exp-skills">
-                        ${exp.competences.map(comp => `<span class="skill-tag">${comp}</span>`).join('')}
+                    <div style="margin-top: 8px;">
+                        ${exp.competences.map(comp => `<span style="display: inline-block; background: #e0e7ff; color: #1e40af; padding: 4px 12px; border-radius: 12px; font-size: 12px; margin-right: 6px; margin-bottom: 6px; font-weight: 500;">${comp}</span>`).join('')}
                     </div>
                 ` : ''}
             </div>
@@ -440,8 +272,8 @@ function buildExperiencesSection(experiences, isEnglish) {
     }).join('');
 
     return `
-        <div class="pdf-section">
-            <h2 class="section-title">${isEnglish ? 'Professional Experience' : 'Expérience Professionnelle'}</h2>
+        <div style="margin-bottom: 25px; page-break-inside: avoid;">
+            <h2 style="color: #1e40af; font-size: 20px; font-weight: 700; margin: 0 0 15px 0; padding-bottom: 8px; border-bottom: 2px solid #1e40af; text-transform: uppercase;">${isEnglish ? 'Professional Experience' : 'Expérience Professionnelle'}</h2>
             ${experiencesHTML}
         </div>
     `;
@@ -463,20 +295,20 @@ function buildFormationsSection(formations, isEnglish) {
             : formation.annee_debut || '';
 
         return `
-            <div class="formation-item">
-                <div class="exp-header">
-                    ${annees ? `<div class="exp-date">${annees}</div>` : ''}
-                    <div class="exp-title">${diplome}</div>
-                    <div class="exp-company">${institution}</div>
+            <div style="margin-bottom: 20px; page-break-inside: avoid;">
+                <div style="margin-bottom: 8px;">
+                    ${annees ? `<div style="color: #1e40af; font-size: 12px; font-weight: 600; margin-bottom: 4px;">${annees}</div>` : ''}
+                    <div style="color: #1a1a1a; font-size: 16px; font-weight: 700; margin-bottom: 2px;">${diplome}</div>
+                    <div style="color: #4b5563; font-size: 14px; font-weight: 600;">${institution}</div>
                 </div>
-                ${description ? `<div class="exp-description">${description}</div>` : ''}
+                ${description ? `<div style="color: #1a1a1a; font-size: 14px; line-height: 1.6;">${description}</div>` : ''}
             </div>
         `;
     }).join('');
 
     return `
-        <div class="pdf-section">
-            <h2 class="section-title">${isEnglish ? 'Education' : 'Formation'}</h2>
+        <div style="margin-bottom: 25px; page-break-inside: avoid;">
+            <h2 style="color: #1e40af; font-size: 20px; font-weight: 700; margin: 0 0 15px 0; padding-bottom: 8px; border-bottom: 2px solid #1e40af; text-transform: uppercase;">${isEnglish ? 'Education' : 'Formation'}</h2>
             ${formationsHTML}
         </div>
     `;
@@ -502,13 +334,13 @@ function buildCompetencesSection(competences, isEnglish) {
         const competencesHTML = comps.map(comp => {
             const nom = isEnglish ? (comp.competence_en || comp.competence) : comp.competence;
             const niveau = isEnglish ? comp.niveau_en : comp.niveau;
-            return `<span class="competence-item">${nom}${niveau ? ' • ' + niveau : ''}</span>`;
+            return `<span style="display: inline-block; background: #e0e7ff; color: #1e40af; padding: 4px 12px; border-radius: 12px; font-size: 12px; margin-right: 6px; margin-bottom: 6px; font-weight: 500;">${nom}${niveau ? ' • ' + niveau : ''}</span>`;
         }).join('');
 
         return `
-            <div class="competence-category">
-                <div class="category-title">${categorie}</div>
-                <div class="competence-list">
+            <div style="margin-bottom: 15px; page-break-inside: avoid;">
+                <div style="color: #1a1a1a; font-size: 14px; font-weight: 700; margin-bottom: 8px;">${categorie}</div>
+                <div style="line-height: 1.8;">
                     ${competencesHTML}
                 </div>
             </div>
@@ -516,8 +348,8 @@ function buildCompetencesSection(competences, isEnglish) {
     }).join('');
 
     return `
-        <div class="pdf-section">
-            <h2 class="section-title">${isEnglish ? 'Skills' : 'Compétences'}</h2>
+        <div style="margin-bottom: 25px; page-break-inside: avoid;">
+            <h2 style="color: #1e40af; font-size: 20px; font-weight: 700; margin: 0 0 15px 0; padding-bottom: 8px; border-bottom: 2px solid #1e40af; text-transform: uppercase;">${isEnglish ? 'Skills' : 'Compétences'}</h2>
             ${categoriesHTML}
         </div>
     `;
@@ -528,7 +360,7 @@ function buildCompetencesSection(competences, isEnglish) {
  */
 function buildFooter(cvInfo, isEnglish) {
     return `
-        <div class="pdf-footer">
+        <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #9ca3af; font-size: 12px;">
             ${isEnglish ? 'Generated with' : 'Généré avec'} SyncCV • ${new Date().getFullYear()}
         </div>
     `;
