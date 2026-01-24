@@ -124,15 +124,20 @@ async function loadSection(sectionName) {
         targetSection.hidden = false;
     }
 
-    // Update title
-    const titles = {
-        'personal-info': 'Informations personnelles',
-        'experiences': 'Expériences professionnelles',
-        'formations': 'Formations et certifications',
-        'competences': 'Compétences techniques',
-        'settings': 'Paramètres du compte'
+    // Update title with translation
+    const titleKeys = {
+        'personal-info': 'section_personal_info',
+        'experiences': 'section_experiences',
+        'formations': 'section_formations',
+        'competences': 'section_competences',
+        'settings': 'section_settings'
     };
-    document.getElementById('sectionTitle').textContent = titles[sectionName];
+    const sectionTitle = document.getElementById('sectionTitle');
+    const titleKey = titleKeys[sectionName];
+    if (titleKey && typeof getAdminTranslation === 'function') {
+        sectionTitle.textContent = getAdminTranslation(titleKey);
+        sectionTitle.setAttribute('data-i18n', titleKey);
+    }
 
     // Load section data
     try {

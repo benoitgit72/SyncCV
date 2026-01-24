@@ -524,6 +524,38 @@ body {
     align-items: center;
 }
 
+/* Language Toggle Button */
+.language-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.language-btn:hover {
+    border-color: var(--primary-color);
+    background: var(--bg-secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.language-btn .flag-icon {
+    font-size: 18px;
+}
+
+.language-btn .lang-text {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
 .content-area {
     flex: 1;
     padding: 30px;

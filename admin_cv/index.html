@@ -20,24 +20,24 @@
             <nav class="sidebar-nav">
                 <a href="#" class="nav-item active" data-section="personal-info">
                     <span class="icon">📝</span>
-                    <span>Informations personnelles</span>
+                    <span data-i18n="nav_personal_info">Informations personnelles</span>
                 </a>
                 <a href="#" class="nav-item" data-section="experiences">
                     <span class="icon">💼</span>
-                    <span>Expériences</span>
+                    <span data-i18n="nav_experiences">Expériences</span>
                 </a>
                 <a href="#" class="nav-item" data-section="formations">
                     <span class="icon">🎓</span>
-                    <span>Formations</span>
+                    <span data-i18n="nav_formations">Formations</span>
                 </a>
                 <a href="#" class="nav-item" data-section="competences">
                     <span class="icon">💪</span>
-                    <span>Compétences</span>
+                    <span data-i18n="nav_competences">Compétences</span>
                 </a>
                 <div style="height: 1px; background: var(--border-color); margin: 10px 0;"></div>
                 <a href="#" class="nav-item" data-section="settings">
                     <span class="icon">⚙️</span>
-                    <span>Paramètres</span>
+                    <span data-i18n="nav_settings">Paramètres</span>
                 </a>
             </nav>
 
@@ -49,7 +49,7 @@
                         <p id="userEmail">...</p>
                     </div>
                 </div>
-                <button class="btn btn-secondary btn-full btn-sm" id="logoutBtn">
+                <button class="btn btn-secondary btn-full btn-sm" id="logoutBtn" data-i18n="user_logout">
                     Déconnexion
                 </button>
             </div>
@@ -58,9 +58,13 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="topbar">
-                <h2 id="sectionTitle">Informations personnelles</h2>
+                <h2 id="sectionTitle" data-i18n="section_personal_info">Informations personnelles</h2>
                 <div class="topbar-actions">
-                    <a href="#" id="previewCV" class="btn btn-primary btn-sm" target="_blank">
+                    <button id="adminLanguageToggle" class="language-btn" aria-label="Changer la langue" style="margin-right: 10px;">
+                        <span class="flag-icon">🇫🇷</span>
+                        <span class="lang-text">FR</span>
+                    </button>
+                    <a href="#" id="previewCV" class="btn btn-primary btn-sm" target="_blank" data-i18n="topbar_preview">
                         Prévisualiser mon CV
                     </a>
                 </div>
@@ -71,62 +75,62 @@
                 <section id="section-personal-info" class="content-section">
                     <div class="card">
                         <div class="card-header">
-                            <h3>Informations de base</h3>
+                            <h3 data-i18n="card_basic_info">Informations de base</h3>
                         </div>
                         <form id="personalInfoForm">
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="nom">Nom complet</label>
+                                    <label for="nom" data-i18n-label="label_nom">Nom complet</label>
                                     <input type="text" id="nom" name="nom">
                                 </div>
                                 <div class="form-group">
-                                    <label for="titre">Titre professionnel</label>
+                                    <label for="titre" data-i18n-label="label_titre">Titre professionnel</label>
                                     <input type="text" id="titre" name="titre">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="titre_en">Professional Title (English)</label>
+                                    <label for="titre_en" data-i18n-label="label_titre_en">Professional Title (English)</label>
                                     <input type="text" id="titre_en" name="titre_en">
                                 </div>
                                 <div class="form-group">
-                                    <label for="email">Email</label>
+                                    <label for="email" data-i18n-label="label_email">Email</label>
                                     <input type="email" id="email" name="email">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="telephone">Téléphone</label>
+                                    <label for="telephone" data-i18n-label="label_telephone">Téléphone</label>
                                     <input type="tel" id="telephone" name="telephone">
                                 </div>
                                 <div class="form-group">
-                                    <label for="linkedin">LinkedIn</label>
+                                    <label for="linkedin" data-i18n-label="label_linkedin">LinkedIn</label>
                                     <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/...">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="bio">Bio / Résumé (Français)</label>
+                                <label for="bio" data-i18n-label="label_bio">Bio / Résumé (Français)</label>
                                 <textarea id="bio" name="bio" rows="4"></textarea>
                             </div>
 
                             <div class="form-group">
-                                <label for="bio_en">Bio / Summary (English)</label>
+                                <label for="bio_en" data-i18n-label="label_bio_en">Bio / Summary (English)</label>
                                 <textarea id="bio_en" name="bio_en" rows="4"></textarea>
                             </div>
 
                             <!-- Photo de profil -->
                             <div class="card" style="margin-top: 30px; background: var(--bg-secondary);">
-                                <h4 style="margin-bottom: 20px;">Photo de profil</h4>
+                                <h4 style="margin-bottom: 20px;" data-i18n="photo_title">Photo de profil</h4>
 
                                 <div class="photo-upload-container">
                                     <div class="photo-preview">
                                         <img id="photoPreview" src="" alt="Photo de profil" style="display: none;">
                                         <div id="photoPlaceholder" class="photo-placeholder">
                                             <span style="font-size: 48px;">👤</span>
-                                            <p style="margin-top: 10px; color: var(--text-secondary);">Aucune photo</p>
+                                            <p style="margin-top: 10px; color: var(--text-secondary);" data-i18n="photo_none">Aucune photo</p>
                                         </div>
                                     </div>
 
@@ -137,13 +141,13 @@
                                             accept="image/jpeg,image/jpg,image/png,image/webp"
                                             style="display: none;"
                                         >
-                                        <button type="button" class="btn btn-primary" id="uploadPhotoBtn">
+                                        <button type="button" class="btn btn-primary" id="uploadPhotoBtn" data-i18n="photo_choose">
                                             📸 Choisir une photo
                                         </button>
-                                        <button type="button" class="btn btn-danger" id="deletePhotoBtn" style="display: none;">
+                                        <button type="button" class="btn btn-danger" id="deletePhotoBtn" style="display: none;" data-i18n="photo_delete">
                                             🗑️ Supprimer
                                         </button>
-                                        <p class="help-text" style="margin-top: 10px;">
+                                        <p class="help-text" style="margin-top: 10px;" data-i18n="photo_help">
                                             JPG, PNG ou WEBP • Max 5 MB • Redimensionnée automatiquement à 400x400px
                                         </p>
                                     </div>
@@ -153,7 +157,7 @@
                             </div>
 
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-success">
+                                <button type="submit" class="btn btn-success" data-i18n="btn_save">
                                     Enregistrer les modifications
                                 </button>
                             </div>
@@ -165,17 +169,17 @@
                 <section id="section-experiences" class="content-section" hidden>
                     <div class="card">
                         <div class="card-header">
-                            <h3>Expériences professionnelles</h3>
-                            <button class="btn btn-primary btn-sm" id="addExperienceBtn">
+                            <h3 data-i18n="section_experiences">Expériences professionnelles</h3>
+                            <button class="btn btn-primary btn-sm" id="addExperienceBtn" data-i18n="btn_add_experience">
                                 + Ajouter une expérience
                             </button>
                         </div>
                         <ul id="experiencesList" class="data-list"></ul>
                         <div id="experiencesEmpty" class="empty-state">
                             <div class="icon">💼</div>
-                            <h3>Aucune expérience</h3>
-                            <p>Commencez par ajouter votre première expérience professionnelle</p>
-                            <button class="btn btn-primary" onclick="document.getElementById('addExperienceBtn').click()">
+                            <h3 data-i18n="empty_experiences_title">Aucune expérience</h3>
+                            <p data-i18n="empty_experiences_desc">Commencez par ajouter votre première expérience professionnelle</p>
+                            <button class="btn btn-primary" onclick="document.getElementById('addExperienceBtn').click()" data-i18n="btn_add_experience">
                                 Ajouter une expérience
                             </button>
                         </div>
@@ -186,17 +190,17 @@
                 <section id="section-formations" class="content-section" hidden>
                     <div class="card">
                         <div class="card-header">
-                            <h3>Formations et certifications</h3>
-                            <button class="btn btn-primary btn-sm" id="addFormationBtn">
+                            <h3 data-i18n="section_formations">Formations et certifications</h3>
+                            <button class="btn btn-primary btn-sm" id="addFormationBtn" data-i18n="btn_add_formation">
                                 + Ajouter une formation
                             </button>
                         </div>
                         <ul id="formationsList" class="data-list"></ul>
                         <div id="formationsEmpty" class="empty-state">
                             <div class="icon">🎓</div>
-                            <h3>Aucune formation</h3>
-                            <p>Ajoutez vos diplômes et certifications</p>
-                            <button class="btn btn-primary" onclick="document.getElementById('addFormationBtn').click()">
+                            <h3 data-i18n="empty_formations_title">Aucune formation</h3>
+                            <p data-i18n="empty_formations_desc">Ajoutez vos diplômes et certifications</p>
+                            <button class="btn btn-primary" onclick="document.getElementById('addFormationBtn').click()" data-i18n="btn_add_formation">
                                 Ajouter une formation
                             </button>
                         </div>
@@ -207,17 +211,17 @@
                 <section id="section-competences" class="content-section" hidden>
                     <div class="card">
                         <div class="card-header">
-                            <h3>Compétences techniques</h3>
-                            <button class="btn btn-primary btn-sm" id="addCompetenceBtn">
+                            <h3 data-i18n="section_competences">Compétences techniques</h3>
+                            <button class="btn btn-primary btn-sm" id="addCompetenceBtn" data-i18n="btn_add_competence">
                                 + Ajouter une compétence
                             </button>
                         </div>
                         <ul id="competencesList" class="data-list"></ul>
                         <div id="competencesEmpty" class="empty-state">
                             <div class="icon">💪</div>
-                            <h3>Aucune compétence</h3>
-                            <p>Organisez vos compétences par catégories</p>
-                            <button class="btn btn-primary" onclick="document.getElementById('addCompetenceBtn').click()">
+                            <h3 data-i18n="empty_competences_title">Aucune compétence</h3>
+                            <p data-i18n="empty_competences_desc">Organisez vos compétences par catégories</p>
+                            <button class="btn btn-primary" onclick="document.getElementById('addCompetenceBtn').click()" data-i18n="btn_add_competence">
                                 Ajouter une compétence
                             </button>
                         </div>
@@ -228,32 +232,32 @@
                 <section id="section-settings" class="content-section" hidden>
                     <div class="card">
                         <div class="card-header">
-                            <h3>Paramètres du compte</h3>
+                            <h3 data-i18n="section_settings">Paramètres du compte</h3>
                         </div>
                         <form id="settingsForm">
                             <div class="form-group">
-                                <label for="slug">Slug (identifiant unique de votre CV)</label>
+                                <label for="slug" data-i18n-label="settings_slug_label">Slug (identifiant unique de votre CV)</label>
                                 <input type="text" id="slug" name="slug" readonly disabled>
-                                <small class="help-text">Votre CV est accessible via: <span id="cvUrl"></span></small>
+                                <small class="help-text"><span data-i18n="settings_slug_help">Votre CV est accessible via:</span> <span id="cvUrl"></span></small>
                             </div>
 
                             <div class="form-group">
-                                <label for="formspree_id">Formspree Form ID</label>
+                                <label for="formspree_id" data-i18n-label="settings_formspree_label">Formspree Form ID</label>
                                 <input type="text" id="formspree_id" name="formspree_id" readonly style="background-color: var(--bg-secondary); cursor: not-allowed; opacity: 0.7;">
-                                <small class="help-text">Pour recevoir les messages du formulaire de contact</small>
+                                <small class="help-text" data-i18n="settings_formspree_help">Pour recevoir les messages du formulaire de contact</small>
                             </div>
 
                             <!-- Theme Selector -->
                             <div class="form-group">
-                                <label>Thème de couleur</label>
+                                <label data-i18n="settings_theme_label">Thème de couleur</label>
                                 <div class="theme-selector">
                                     <div class="theme-option" data-theme="purple-gradient">
                                         <div class="theme-preview theme-purple-gradient">
                                             <div class="theme-preview-gradient"></div>
                                         </div>
                                         <div class="theme-info">
-                                            <strong>Purple Gradient</strong>
-                                            <p>Moderne et professionnel</p>
+                                            <strong data-i18n="theme_purple">Purple Gradient</strong>
+                                            <p data-i18n="theme_purple_desc">Moderne et professionnel</p>
                                         </div>
                                         <div class="theme-check">✓</div>
                                     </div>
@@ -262,8 +266,8 @@
                                             <div class="theme-preview-gradient"></div>
                                         </div>
                                         <div class="theme-info">
-                                            <strong>Ocean Blue</strong>
-                                            <p>Corporatif et confiant</p>
+                                            <strong data-i18n="theme_ocean">Ocean Blue</strong>
+                                            <p data-i18n="theme_ocean_desc">Corporatif et confiant</p>
                                         </div>
                                         <div class="theme-check">✓</div>
                                     </div>
@@ -272,8 +276,8 @@
                                             <div class="theme-preview-gradient"></div>
                                         </div>
                                         <div class="theme-info">
-                                            <strong>Forest Green</strong>
-                                            <p>Naturel et innovant</p>
+                                            <strong data-i18n="theme_forest">Forest Green</strong>
+                                            <p data-i18n="theme_forest_desc">Naturel et innovant</p>
                                         </div>
                                         <div class="theme-check">✓</div>
                                     </div>
@@ -282,17 +286,17 @@
                                             <div class="theme-preview-gradient"></div>
                                         </div>
                                         <div class="theme-info">
-                                            <strong>Sunset Orange</strong>
-                                            <p>Dynamique et créatif</p>
+                                            <strong data-i18n="theme_sunset">Sunset Orange</strong>
+                                            <p data-i18n="theme_sunset_desc">Dynamique et créatif</p>
                                         </div>
                                         <div class="theme-check">✓</div>
                                     </div>
                                 </div>
-                                <small class="help-text">Le thème choisi sera appliqué à votre interface d'administration</small>
+                                <small class="help-text" data-i18n="settings_theme_help">Le thème choisi sera appliqué à votre interface d'administration</small>
                             </div>
 
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-success">
+                                <button type="submit" class="btn btn-success" data-i18n="btn_save_settings">
                                     Enregistrer les paramètres
                                 </button>
                             </div>
@@ -323,6 +327,12 @@
 
     <!-- Theme Manager -->
     <script src="js/theme-manager.js"></script>
+
+    <!-- Admin Translations -->
+    <script src="js/admin-translations.js"></script>
+
+    <!-- Admin Language Manager -->
+    <script src="js/admin-language.js"></script>
 
     <!-- Main Dashboard Script -->
     <script src="js/dashboard.js"></script>
