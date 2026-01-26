@@ -1,11 +1,21 @@
-# Vérification des Variables d'Environnement Vercel
+# ⚠️ DOCUMENT OBSOLÈTE
 
-## 🔴 Problème Identifié
+**Ce guide n'est plus nécessaire!** Le système a été refactorisé pour utiliser JWT auth au lieu du service role key.
 
-L'erreur 500 sur `/api/admin/get-api-limits` est causée par une variable d'environnement manquante:
+Voir [ARCHITECTURE-DECISION-API-LIMITS-AUTH.md](ARCHITECTURE-DECISION-API-LIMITS-AUTH.md) pour les détails.
+
+---
+
+# ~~Vérification des Variables d'Environnement Vercel~~ (ANCIEN)
+
+## ~~🔴 Problème Identifié~~ (RÉSOLU)
+
+~~L'erreur 500 sur `/api/admin/get-api-limits` est causée par une variable d'environnement manquante:~~
 ```
-SUPABASE_SERVICE_ROLE_KEY
+SUPABASE_SERVICE_ROLE_KEY  ← N'EST PLUS NÉCESSAIRE!
 ```
+
+**Solution appliquée**: Les endpoints utilisent maintenant le token JWT de l'utilisateur, comme tous les autres endpoints admin.
 
 ## 🔍 Étape 1: Vérifier les Variables dans Vercel
 

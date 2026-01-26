@@ -39,14 +39,15 @@ SELECT count(*) FROM api_limits;
 
 ### Étape 2: Vérifier les Variables d'Environnement Vercel
 
+**⚡ Note**: Les endpoints API Limits utilisent le **token JWT de l'admin** (pas de service role key nécessaire). Aucune variable d'environnement supplémentaire requise!
+
+Si vous voulez quand même vérifier:
 1. Aller dans **Vercel Dashboard** → Votre projet **SyncCV**
 2. **Settings** → **Environment Variables**
-3. Vérifier que ces variables sont définies:
-   - `ANTHROPIC_API_KEY` ✅
-   - `SUPABASE_URL` ✅
-   - `SUPABASE_SERVICE_ROLE_KEY` ✅
-
-Si elles existent déjà, rien à faire. Sinon, les ajouter.
+3. Les variables standards devraient suffire:
+   - `ANTHROPIC_API_KEY` ✅ (pour Claude API)
+   - `SUPABASE_URL` ✅ (optionnel, valeur par défaut en place)
+   - `SUPABASE_ANON_KEY` ✅ (optionnel, valeur par défaut en place)
 
 ---
 
