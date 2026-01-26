@@ -15,6 +15,11 @@ async function loadAPILimits() {
     const limitsGrid = document.getElementById('limitsGrid');
 
     try {
+        const supabase = getSupabaseClient();
+        if (!supabase) {
+            throw new Error('Supabase client not initialized');
+        }
+
         const session = await supabase.auth.getSession();
         if (!session.data.session) {
             throw new Error('Not authenticated');
@@ -196,6 +201,11 @@ async function saveLimits(featureName) {
             throw new Error('Limite par jour invalide (1-10000)');
         }
 
+        const supabase = getSupabaseClient();
+        if (!supabase) {
+            throw new Error('Supabase client not initialized');
+        }
+
         const session = await supabase.auth.getSession();
         if (!session.data.session) {
             throw new Error('Not authenticated');
@@ -263,6 +273,11 @@ async function loadLimitsHistory() {
     const historyBody = document.getElementById('limitsHistoryBody');
 
     try {
+        const supabase = getSupabaseClient();
+        if (!supabase) {
+            throw new Error('Supabase client not initialized');
+        }
+
         const { data: history, error } = await supabase
             .from('api_limits_history')
             .select(`
