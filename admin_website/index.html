@@ -15,6 +15,10 @@
             </div>
 
             <nav class="sidebar-nav">
+                <a href="#" class="nav-item" data-section="limits">
+                    <span class="icon">⚙️</span>
+                    <span>Limites API</span>
+                </a>
                 <a href="#" class="nav-item active" data-section="statistics">
                     <span class="icon">📊</span>
                     <span>Statistics</span>
@@ -44,6 +48,70 @@
             <div class="top-bar">
                 <h1 id="sectionTitle">Statistics Dashboard</h1>
             </div>
+
+            <!-- API Limits Section -->
+            <section id="section-limits" class="content-section" hidden>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>⚙️ Gestion des limites API</h3>
+                        <p style="margin: 10px 0 0 0; color: var(--text-secondary); font-size: 0.9em;">
+                            Configurez les limites d'utilisation pour chaque fonctionnalité utilisant l'API Claude.
+                        </p>
+                    </div>
+
+                    <div id="limitsLoading" style="text-align: center; padding: 40px;">
+                        <div class="spinner"></div>
+                        <p style="margin-top: 15px; color: var(--text-secondary);">Chargement des limites...</p>
+                    </div>
+
+                    <div id="limitsContent" style="display: none;">
+                        <div id="limitsGrid" style="display: grid; gap: 20px;">
+                            <!-- Filled by JavaScript -->
+                        </div>
+
+                        <div style="margin-top: 25px; padding: 15px; background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; border-radius: 4px;">
+                            <p style="margin: 0; font-size: 0.9em; color: var(--text-secondary);">
+                                💡 <strong>Note:</strong> Les modifications prennent effet immédiatement. Utilisez des valeurs entre 1 et 10000, ou laissez vide pour aucune limite.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Limits History -->
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h3>📜 Historique des modifications</h3>
+                    </div>
+
+                    <div id="limitsHistoryLoading" style="text-align: center; padding: 30px;">
+                        <div class="spinner"></div>
+                        <p style="margin-top: 15px; color: var(--text-secondary);">Chargement de l'historique...</p>
+                    </div>
+
+                    <div id="limitsHistoryContent" style="display: none;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Fonctionnalité</th>
+                                    <th>Par minute</th>
+                                    <th>Par heure</th>
+                                    <th>Par jour</th>
+                                    <th>Modifié par</th>
+                                </tr>
+                            </thead>
+                            <tbody id="limitsHistoryBody">
+                                <!-- Filled by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="limitsHistoryEmpty" style="display: none; text-align: center; padding: 40px; color: var(--text-secondary);">
+                        <div style="font-size: 48px; margin-bottom: 15px;">📜</div>
+                        <p>Aucune modification enregistrée pour le moment.</p>
+                    </div>
+                </div>
+            </section>
 
             <!-- Statistics Section -->
             <section id="section-statistics" class="content-section">
@@ -160,6 +228,7 @@
     <script src="../js/supabase-client.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/dashboard.js"></script>
+    <script src="js/api-limits.js"></script>
     <script src="js/statistics.js"></script>
     <script src="js/communication.js"></script>
 </body>
