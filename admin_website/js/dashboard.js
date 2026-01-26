@@ -96,6 +96,7 @@ async function loadSection(sectionName) {
 
     // Update title
     const titles = {
+        'limits': 'API Limits Management',
         'statistics': 'Statistics Dashboard',
         'communication': 'Communication Center'
     };
@@ -108,6 +109,9 @@ async function loadSection(sectionName) {
     // Load section data
     try {
         switch (sectionName) {
+            case 'limits':
+                // API limits section loads automatically via api-limits.js
+                break;
             case 'statistics':
                 await loadStatistics();
                 break;
