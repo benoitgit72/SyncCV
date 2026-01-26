@@ -4,9 +4,17 @@
 
 Tu es un expert en extraction de données de CV et génération de SQL pour Supabase.
 
-**TÂCHE:** Analyser un CV français fourni et générer les requêtes SQL INSERT pour ajouter les données dans les tables Supabase existantes du système SyncCV.
+**TÂCHE:** Analyser un CV français fourni et générer les requêtes SQL pour mettre à jour les données dans Supabase.
 
-**IMPORTANT:** Les tables existent déjà dans Supabase. NE PAS générer de CREATE TABLE. Générer UNIQUEMENT des INSERT statements.
+**CONTEXTE IMPORTANT:**
+- L'utilisateur existe déjà dans Supabase avec UUID: `24106dd4-48a6-4dec-8c10-0c2bcde4e888`
+- Les tables `profiles` et `cv_info` ont déjà une ligne pour cet utilisateur → **UTILISER UPDATE**
+- Les tables `experiences`, `formations`, `competences` sont vides → **UTILISER INSERT**
+
+**IMPORTANT:**
+- Les tables existent déjà dans Supabase. NE PAS générer de CREATE TABLE
+- Générer UPDATE pour profiles et cv_info
+- Générer INSERT pour experiences, formations, competences
 
 ---
 
@@ -33,67 +41,73 @@ Tu es un expert en extraction de données de CV et génération de SQL pour Supa
 
 ## Format de Sortie Attendu
 
-Génère **UNIQUEMENT** les INSERT statements dans cet ordre exact:
+Génère les requêtes SQL dans cet ordre exact:
 
 ```sql
 -- ============================================
--- IMPORT CV: [Nom de la personne]
+-- MISE À JOUR CV: [Nom de la personne]
+-- UUID Utilisateur: 24106dd4-48a6-4dec-8c10-0c2bcde4e888
 -- Date: [Date actuelle]
 -- ============================================
 
--- IMPORTANT: Générer un UUID v4 unique et l'utiliser dans TOUS les INSERT ci-dessous
--- Exemple d'UUID: '550e8400-e29b-41d4-a716-446655440000'
+-- 1. METTRE À JOUR le profil existant
+UPDATE profiles
+SET
+    slug = '[slug-normalise]',  -- Ex: 'ron-more'
+    template_id = 1,
+    subscription_status = 'trial',
+    theme = 'purple-gradient',
+    updated_at = NOW()
+WHERE id = '24106dd4-48a6-4dec-8c10-0c2bcde4e888';
 
--- 1. Insérer le profil
-INSERT INTO profiles (slug, template_id, subscription_status, theme)
-VALUES (
-    '[slug-normalise]',  -- Ex: 'marie-tremblay'
-    1,
-    'trial',
-    'purple-gradient'
-) RETURNING id;  -- Récupérer l'UUID généré pour l'utiliser ci-dessous
+-- 2. METTRE À JOUR les informations personnelles existantes
+UPDATE cv_info
+SET
+    nom = '[Nom complet]',
+    titre = '[Titre professionnel FR]',
+    titre_en = '[Titre professionnel EN]',
+    email = '[Email]',
+    telephone = '[Téléphone]',
+    bio = '[Bio FR]',
+    bio_en = '[Bio EN]',
+    linkedin = '[LinkedIn URL]',
+    github = '[GitHub URL]',
+    formspree_id = 'mpqqkbka',
+    stat1_fr = '[Stat1 FR]',  -- Ex: '12+ années d''expérience'
+    stat1_en = '[Stat1 EN]',  -- Ex: '12+ years of experience'
+    stat2_fr = '[Stat2 FR]',
+    stat2_en = '[Stat2 EN]',
+    stat3_fr = '[Stat3 FR]',
+    stat3_en = '[Stat3 EN]',
+    updated_at = NOW()
+WHERE user_id = '24106dd4-48a6-4dec-8c10-0c2bcde4e888';
 
--- Note: Utilise l'UUID retourné ci-dessus dans tous les INSERT suivants
+-- 3. INSÉRER les expériences professionnelles (ordre chronologique inverse: 0 = plus récent)
+-- Note: Supprimer d'abord les anciennes expériences si nécessaire
+DELETE FROM experiences WHERE user_id = '24106dd4-48a6-4dec-8c10-0c2bcde4e888';
 
--- 2. Informations personnelles
-INSERT INTO cv_info (user_id, nom, titre, titre_en, email, telephone, bio, bio_en, linkedin, github, formspree_id, stat1_fr, stat1_en, stat2_fr, stat2_en, stat3_fr, stat3_en)
-VALUES (
-    '[UUID]',  -- L'UUID du profil créé ci-dessus
-    '[Nom complet]',
-    '[Titre professionnel FR]',
-    '[Titre professionnel EN]',
-    '[Email]',
-    '[Téléphone]',
-    '[Bio FR]',
-    '[Bio EN]',
-    '[LinkedIn URL]',
-    '[GitHub URL]',
-    'mpqqkbka',
-    '[Stat1 FR]',  -- Ex: '12+ années d''expérience'
-    '[Stat1 EN]',  -- Ex: '12+ years of experience'
-    '[Stat2 FR]',
-    '[Stat2 EN]',
-    '[Stat3 FR]',
-    '[Stat3 EN]'
-);
-
--- 3. Expériences professionnelles (ordre chronologique inverse: 0 = plus récent)
 INSERT INTO experiences (user_id, titre, titre_en, entreprise, entreprise_en, periode_debut, periode_fin, en_cours, description, description_en, competences, ordre)
 VALUES
-    ('[UUID]', '[Titre 1 FR]', '[Titre 1 EN]', '[Entreprise]', '[Entreprise EN]', '2020-01-15', NULL, true, '[Description FR]', '[Description EN]', ARRAY['competence1', 'competence2'], 0),
-    ('[UUID]', '[Titre 2 FR]', '[Titre 2 EN]', '[Entreprise]', '[Entreprise EN]', '2015-03-01', '2019-12-31', false, '[Description FR]', '[Description EN]', ARRAY['competence1', 'competence2'], 1);
+    ('24106dd4-48a6-4dec-8c10-0c2bcde4e888', '[Titre 1 FR]', '[Titre 1 EN]', '[Entreprise]', '[Entreprise EN]', '2020-01-15', NULL, true, '[Description FR]', '[Description EN]', ARRAY['competence1', 'competence2'], 0),
+    ('24106dd4-48a6-4dec-8c10-0c2bcde4e888', '[Titre 2 FR]', '[Titre 2 EN]', '[Entreprise]', '[Entreprise EN]', '2015-03-01', '2019-12-31', false, '[Description FR]', '[Description EN]', ARRAY['competence1', 'competence2'], 1);
 
--- 4. Formations et certifications (ordre: 0 = plus récent)
+-- 4. INSÉRER les formations et certifications (ordre: 0 = plus récent)
+-- Note: Supprimer d'abord les anciennes formations si nécessaire
+DELETE FROM formations WHERE user_id = '24106dd4-48a6-4dec-8c10-0c2bcde4e888';
+
 INSERT INTO formations (user_id, diplome, diplome_en, institution, institution_en, annee_debut, annee_fin, description, description_en, ordre)
 VALUES
-    ('[UUID]', '[Diplôme FR]', '[Diplôme EN]', '[Institution]', '[Institution EN]', 2018, 2018, '[Description FR]', '[Description EN]', 0),
-    ('[UUID]', '[Diplôme FR]', '[Diplôme EN]', '[Institution]', '[Institution EN]', 2011, 2015, '[Description FR]', '[Description EN]', 1);
+    ('24106dd4-48a6-4dec-8c10-0c2bcde4e888', '[Diplôme FR]', '[Diplôme EN]', '[Institution]', '[Institution EN]', 2018, 2018, '[Description FR]', '[Description EN]', 0),
+    ('24106dd4-48a6-4dec-8c10-0c2bcde4e888', '[Diplôme FR]', '[Diplôme EN]', '[Institution]', '[Institution EN]', 2011, 2015, '[Description FR]', '[Description EN]', 1);
 
--- 5. Compétences (groupées par catégorie, ordre: 0 = plus important)
+-- 5. INSÉRER les compétences (groupées par catégorie, ordre: 0 = plus important)
+-- Note: Supprimer d'abord les anciennes compétences si nécessaire
+DELETE FROM competences WHERE user_id = '24106dd4-48a6-4dec-8c10-0c2bcde4e888';
+
 INSERT INTO competences (user_id, categorie, categorie_en, competence, competence_en, niveau, niveau_en, ordre)
 VALUES
-    ('[UUID]', '[Catégorie FR]', '[Catégorie EN]', '[Compétence FR]', '[Compétence EN]', '[Niveau FR]', '[Niveau EN]', 0),
-    ('[UUID]', '[Catégorie FR]', '[Catégorie EN]', '[Compétence FR]', '[Compétence EN]', '[Niveau FR]', '[Niveau EN]', 1);
+    ('24106dd4-48a6-4dec-8c10-0c2bcde4e888', '[Catégorie FR]', '[Catégorie EN]', '[Compétence FR]', '[Compétence EN]', '[Niveau FR]', '[Niveau EN]', 0),
+    ('24106dd4-48a6-4dec-8c10-0c2bcde4e888', '[Catégorie FR]', '[Catégorie EN]', '[Compétence FR]', '[Compétence EN]', '[Niveau FR]', '[Niveau EN]', 1);
 ```
 
 ---
@@ -101,12 +115,13 @@ VALUES
 ## Règles d'Extraction et de Transformation
 
 ### 1. **UUID et Slug**
-- **IMPORTANT:** Générer un UUID v4 au début et l'utiliser partout
-- Dans le premier INSERT (profiles), utiliser: `gen_random_uuid()`
-- Dans tous les autres INSERT (cv_info, experiences, formations, competences), utiliser le même UUID généré
-- **Alternative:** Tu peux aussi générer un UUID v4 (ex: `'550e8400-e29b-41d4-a716-446655440000'`) et l'utiliser directement partout
+- **UUID FIXE:** Utiliser TOUJOURS `24106dd4-48a6-4dec-8c10-0c2bcde4e888` (l'utilisateur existe déjà)
+- **NE PAS générer de nouvel UUID**
 - Slug = prénom-nom en minuscules, sans accents, sans espaces
-- Exemple: "Jean-Pierre Dupont" → `jean-pierre-dupont`
+- Exemples de slug:
+  - "Jean-Pierre Dupont" → `jean-pierre-dupont`
+  - "Ron More" → `ron-more`
+  - "Marie Tremblay" → `marie-tremblay`
 
 ### 2. **Dates**
 - Format SQL: `'YYYY-MM-DD'`
@@ -200,11 +215,12 @@ COMPÉTENCES
 1. **Lis attentivement le CV fourni**
 2. **Extrais toutes les informations** (ne laisse rien de côté)
 3. **Traduis en anglais** tous les champs `_en`
-4. **Génère UNIQUEMENT les INSERT statements** (pas de CREATE TABLE)
-5. **Utilise le même UUID** pour user_id dans toutes les tables (généré dans le premier INSERT profiles)
-6. **Vérifie la syntaxe SQL** (virgules, guillemets, parenthèses)
-7. **Échappe les apostrophes** dans les textes (` '` → `''`)
-8. **Ajoute des commentaires** pour clarifier les sections
+4. **Génère UPDATE pour profiles et cv_info** (lignes existantes)
+5. **Génère DELETE puis INSERT pour experiences, formations, competences** (remplacer toutes les données)
+6. **Utilise TOUJOURS l'UUID: `24106dd4-48a6-4dec-8c10-0c2bcde4e888`** dans toutes les requêtes
+7. **Vérifie la syntaxe SQL** (virgules, guillemets, parenthèses)
+8. **Échappe les apostrophes** dans les textes (` '` → `''`)
+9. **Ajoute des commentaires** pour clarifier les sections
 
 ---
 
@@ -235,8 +251,10 @@ Claude générera alors les INSERT statements prêts à être exécutés dans Su
 ## Notes Importantes
 
 - **Tables:** Les tables existent déjà. NE PAS générer de CREATE TABLE
-- **INSERT uniquement:** Générer UNIQUEMENT des INSERT statements
-- **UUID:** Laisser Supabase générer l'UUID avec `RETURNING id`, ou générer un UUID v4 et l'utiliser partout
+- **UUID FIXE:** Utiliser TOUJOURS `24106dd4-48a6-4dec-8c10-0c2bcde4e888` (ne pas générer de nouvel UUID)
+- **UPDATE vs INSERT:**
+  - `profiles` et `cv_info` → **UPDATE** (lignes existantes)
+  - `experiences`, `formations`, `competences` → **DELETE puis INSERT** (remplacer tout)
 - **Échappement:** Échapper les apostrophes dans le texte: `'` → `''`
 - **NULL:** Utiliser `NULL` (sans guillemets) pour valeurs manquantes
 - **Arrays:** Format PostgreSQL: `ARRAY['item1', 'item2']`
@@ -247,12 +265,15 @@ Claude générera alors les INSERT statements prêts à être exécutés dans Su
 ## Vérification Post-Génération
 
 Après génération, vérifier:
-- ✓ Tous les INSERT ont le même UUID pour user_id
+- ✓ L'UUID `24106dd4-48a6-4dec-8c10-0c2bcde4e888` est utilisé partout
+- ✓ UPDATE utilisé pour `profiles` et `cv_info`
+- ✓ DELETE + INSERT utilisés pour `experiences`, `formations`, `competences`
 - ✓ Les dates sont au format 'YYYY-MM-DD'
-- ✓ Les apostrophes sont échappées
-- ✓ Les arrays sont bien formatés
+- ✓ Les apostrophes sont échappées (`'` → `''`)
+- ✓ Les arrays sont bien formatés (`ARRAY['item1', 'item2']`)
 - ✓ Tous les champs obligatoires sont remplis
-- ✓ Les traductions EN sont présentes
+- ✓ Les traductions EN sont présentes pour tous les champs `_en`
+- ✓ Le slug est correctement formaté (minuscules, sans accents)
 
 ---
 
