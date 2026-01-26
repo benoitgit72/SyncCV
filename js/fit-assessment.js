@@ -29,7 +29,11 @@ function initFitAssessment() {
     if (closeBtn) closeBtn.addEventListener('click', closeFitModal);
     if (overlay) overlay.addEventListener('click', closeFitModal);
     if (analyzeBtn) analyzeBtn.addEventListener('click', analyzeFit);
-    if (textarea) textarea.addEventListener('input', updateCharCount);
+    if (textarea) {
+        textarea.addEventListener('input', updateCharCount);
+        textarea.addEventListener('paste', () => setTimeout(updateCharCount, 10));
+        textarea.addEventListener('change', updateCharCount);
+    }
     if (copyBtn) copyBtn.addEventListener('click', copyResults);
     if (newAnalysisBtn) newAnalysisBtn.addEventListener('click', newAnalysis);
     if (retryBtn) retryBtn.addEventListener('click', retryAnalysis);

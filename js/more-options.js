@@ -5,7 +5,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     initMoreOptionsMenu();
     initPdfDownload();
-    initFitAssessment();
+    initFitAssessmentMenuItem();
 });
 
 /**
@@ -81,9 +81,9 @@ function initPdfDownload() {
 }
 
 /**
- * Initialize Fit Assessment functionality
+ * Initialize Fit Assessment menu item
  */
-function initFitAssessment() {
+function initFitAssessmentMenuItem() {
     const fitBtn = document.getElementById('fitAssessmentBtn');
 
     if (!fitBtn) return;
