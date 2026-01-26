@@ -513,9 +513,47 @@ body {
     justify-content: space-between;
 }
 
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
 .topbar h2 {
     font-size: 24px;
     color: var(--text-primary);
+    margin: 0;
+}
+
+.client-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    border: 1px solid #667eea30;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+.client-badge:hover {
+    background: linear-gradient(135deg, #667eea25 0%, #764ba225 100%);
+    border-color: #667eea50;
+    transform: translateY(-1px);
+}
+
+.client-icon {
+    font-size: 16px;
+    filter: grayscale(20%);
+}
+
+.client-name {
+    font-weight: 600;
+    letter-spacing: 0.3px;
 }
 
 .topbar-actions {
@@ -822,6 +860,25 @@ body {
 
     .topbar {
         padding: 15px 20px;
+    }
+
+    .topbar-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .topbar h2 {
+        font-size: 20px;
+    }
+
+    .client-badge {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+
+    .client-icon {
+        font-size: 14px;
     }
 
     .content-area {

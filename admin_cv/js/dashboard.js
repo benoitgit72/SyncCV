@@ -53,6 +53,12 @@ async function loadUserProfile() {
             userEmail.textContent = currentUser.email;
             userAvatar.textContent = displayName.charAt(0).toUpperCase();
 
+            // Update client name badge in topbar
+            const clientNameBadge = document.getElementById('clientName');
+            if (clientNameBadge) {
+                clientNameBadge.textContent = displayName;
+            }
+
             // Update preview CV link
             const previewLink = document.getElementById('previewCV');
             previewLink.href = `/${currentProfile.slug}`;
