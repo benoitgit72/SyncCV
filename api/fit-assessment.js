@@ -342,6 +342,37 @@ export default async function handler(req, res) {
             });
         }
 
+        // Check if CV has sufficient data for analysis
+        const hasExperiences = cvData.experiences && cvData.experiences.length > 0;
+        const hasFormations = cvData.formations && cvData.formations.length > 0;
+        const hasCompetences = cvData.competences && cvData.competences.length >= 3;
+
+        const insufficientData = !hasExperiences && (!hasFormations || !hasCompetences);
+
+        if (insufficientData) {
+            console.log('⚠️ Insufficient CV data for analysis');
+
+            const message = language === 'fr'
+                ? 'Ce CV ne contient pas suffisamment de données pour effectuer une analyse approfondie. Pour obtenir une évaluation pertinente, le CV devrait inclure au minimum des expériences professionnelles ou une combinaison de formations et compétences détaillées.'
+                : 'This CV does not contain enough data to perform a thorough analysis. For a relevant assessment, the CV should include at minimum professional experiences or a combination of detailed education and skills.';
+
+            return res.status(400).json({
+                error: 'Insufficient CV data',
+                message: message,
+                suggestions: language === 'fr'
+                    ? [
+                        'Ajoutez au moins une expérience professionnelle',
+                        'Complétez vos formations',
+                        'Ajoutez vos compétences principales (minimum 3)'
+                    ]
+                    : [
+                        'Add at least one professional experience',
+                        'Complete your education section',
+                        'Add your main skills (minimum 3)'
+                    ]
+            });
+        }
+
         // Build context
         const cvContext = buildCVContext(cvData, language);
 

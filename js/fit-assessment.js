@@ -184,6 +184,12 @@ async function analyzeFit() {
                 throw new Error(message);
             }
 
+            // Handle insufficient data
+            if (response.status === 400 && error.error === 'Insufficient CV data') {
+                showInsufficientDataError(error.message, error.suggestions);
+                return;
+            }
+
             throw new Error(error.message || error.error || 'Erreur d\'analyse');
         }
 
@@ -312,6 +318,43 @@ function showError(message) {
         // Show retry button for rate limit errors
         if (retryBtn) {
             retryBtn.hidden = !message.includes('limite') && !message.includes('limit');
+        }
+    }
+}
+
+/**
+ * Show Insufficient Data Error
+ */
+function showInsufficientDataError(message, suggestions) {
+    hideLoadingState();
+
+    // Show input section again
+    const inputSection = document.querySelector('.fit-input-section');
+    if (inputSection) inputSection.style.display = 'block';
+
+    // Show error state
+    const errorDiv = document.getElementById('fitErrorState');
+    const errorMessage = document.getElementById('fitErrorMessage');
+
+    if (errorDiv && errorMessage) {
+        // Build message with suggestions
+        let fullMessage = message;
+
+        if (suggestions && suggestions.length > 0) {
+            fullMessage += '\n\n' + (getCurrentLanguage() === 'fr' ? 'Suggestions:' : 'Suggestions:') + '\n';
+            suggestions.forEach(suggestion => {
+                fullMessage += '• ' + suggestion + '\n';
+            });
+        }
+
+        errorMessage.textContent = fullMessage;
+        errorMessage.style.whiteSpace = 'pre-line';
+        errorDiv.hidden = false;
+
+        // Hide retry button
+        const retryBtn = document.getElementById('retryAnalysisBtn');
+        if (retryBtn) {
+            retryBtn.hidden = true;
         }
     }
 }
