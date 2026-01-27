@@ -43,9 +43,8 @@ async function loadUserProfile() {
         const userAvatar = document.getElementById('userAvatar');
 
         if (currentProfile) {
-            // Try to get CV info for display name
-            const cvInfo = await getCVInfo(currentUser.id);
-            const displayName = cvInfo?.nom || currentUser.email?.split('@')[0] || 'Admin';
+            // Use email for display name (admin_website manages global settings, not CV data)
+            const displayName = currentUser.email?.split('@')[0] || 'Admin';
 
             if (userName) userName.textContent = displayName;
             if (userEmail) userEmail.textContent = 'Administrator';
@@ -143,22 +142,3 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
-/**
- * Get CV Info for current user (helper function)
- */
-async function getCVInfo(userId) {
-    try {
-        const supabase = getSupabaseClient();
-        const { data, error } = await supabase
-            .from('cv_info')
-            .select('*')
-            .eq('user_id', userId)
-            .maybeSingle();
-
-        if (error) throw error;
-        return data;
-    } catch (error) {
-        console.error('Erreur getCVInfo:', error);
-        return null;
-    }
-}
